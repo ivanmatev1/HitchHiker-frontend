@@ -4,10 +4,21 @@ import { Text, View, StyleSheet, ImageBackground, TextInput, TouchableOpacity } 
 import AntDesign from '@expo/vector-icons/AntDesign';
 import Entypo from '@expo/vector-icons/Entypo';
 import BouncyCheckbox from "react-native-bouncy-checkbox";
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
+
+GoogleSignin.configure({
+	webClientId: "142542102562-bsrn2s26j19t9hj8ahnriibul371tq2b.apps.googleusercontent.com",
+    offlineAccess: true,
+	scopes: ['profile', 'email'],
+});
 
 import WhiteHitchhiker from '@/assets/images/white HitchHiker.svg';
 
-
+const GoogleLogin = async () => {
+	await GoogleSignin.hasPlayServices();
+	const userInfo = await GoogleSignin.signIn();
+	return userInfo;
+};
 
 export default function LogIn() {
     // handle the switch between login and signup
@@ -19,8 +30,16 @@ export default function LogIn() {
 
     const router = useRouter();
 
-    function LogInButtonFunction() {
+    async function LogInButtonFunction() {
         console.log(email, password);
+
+		try {
+			const response = await GoogleLogin();
+			console.log(response.data);
+            router.replace("/(home)");
+		} catch (apiError) {
+			console.log(apiError);
+		}
     }
 
     return (
