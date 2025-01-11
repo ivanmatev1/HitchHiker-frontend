@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from "expo-router";
+import { useRouter } from 'expo-router';
 import { Text, View, StyleSheet, ImageBackground, TextInput, TouchableOpacity } from "react-native";
 import AntDesign from '@expo/vector-icons/AntDesign';
 import Entypo from '@expo/vector-icons/Entypo';
@@ -10,9 +10,14 @@ import WhiteHitchhiker from '@/assets/images/white HitchHiker.svg';
 
 
 export default function LogIn() {
+    // handle the switch between login and signup
+    const [signup, setSignUp] = useState(false);
+
     const [email, onChangeEmail] = useState('');
     const [password, onChangePassword] = useState('');
     const [hidePassword, setHidePassword] = useState(true);
+
+    const router = useRouter();
 
     function LogInButtonFunction() {
         console.log(email, password);
@@ -21,15 +26,37 @@ export default function LogIn() {
     return (
         <View style={styles.container}>
             <ImageBackground
-                source={require('@/assets/images/purpleBackground1.png')}
+                source={require('@/assets/images/purpleBackground3.png')}
                 resizeMode="cover"
                 style={styles.image}
             >
                 <WhiteHitchhiker width={110} height={110} style={styles.logo} />
                 <View style={{ flex: 1, height: '100%', justifyContent: 'flex-end' }}>
                     <View style={styles.contentContainer}>
-                        <Text style={styles.title}>Log in</Text>
+                        {/* Title */}
+                        <Text style={styles.title}>{signup ? "Sign Up" : "Log In"}</Text>
 
+                        {/* Fields only for the signup */}
+                        {signup ? (
+                            <View style={{ width: "100%" }}>
+                                <View style={{ width: "100%", flexDirection: "row", gap: 8 }}>
+                                    <View style={{ flex: 1 }}>
+                                        <Text style={styles.text}>First Name</Text>
+                                        <TextInput style={styles.inputField} placeholder="First Name" />
+                                    </View>
+                                    <View style={{ flex: 1 }}>
+                                        <Text style={styles.text}>Last Name</Text>
+                                        <TextInput style={styles.inputField} placeholder="Last Name" />
+                                    </View>
+                                </View>
+
+                                <View style={{ width: "100%" }}>
+                                    <Text style={styles.text}>Username</Text>
+                                    <TextInput style={styles.inputField} placeholder="Username" />
+                                </View>
+                            </View>
+                        ) : (null)
+                        }
                         <View style={{ width: "100%" }}>
                             <Text style={styles.text}>Email</Text>
                             <TextInput style={styles.inputField} placeholder="Email" onChangeText={onChangeEmail} value={email} inputMode='email' />
@@ -39,6 +66,7 @@ export default function LogIn() {
                             <Text style={styles.text}>Password</Text>
                             <View style={styles.passwordContainer}>
                                 <TextInput style={styles.passwordInputField} placeholder="Password" onChangeText={onChangePassword} value={password} secureTextEntry={hidePassword} />
+                                {/* Handles the switch between the icons */}
                                 {hidePassword ? (
                                     <Entypo name="eye-with-line" size={20} color="black" onPress={() => setHidePassword(!hidePassword)} />
                                 ) : (
@@ -58,15 +86,16 @@ export default function LogIn() {
                             style={{ marginLeft: 8, marginBottom: 8 }}
                         />
                         <TouchableOpacity style={styles.button} onPress={LogInButtonFunction}>
-                            <Text style={styles.buttonText}>Login</Text>
+                            <Text style={styles.buttonText}>{signup ? "Sign Up" : "Log In"}</Text>
                         </TouchableOpacity>
 
                         <TouchableOpacity style={styles.googleButton} onPress={LogInButtonFunction}>
                             <AntDesign name="google" size={28} color="black" />
                             <Text style={styles.googleButtonText}> Sign in with Google</Text>
                         </TouchableOpacity>
-
-                        <Link href="/(signup)" style={styles.text}>Don't have an account? Sign Up</Link>
+                        <Text style={styles.text} onPress={() => setSignUp(!signup)}>
+                            {signup ? "Already have an account? Log In" : "Don't have an account? Sign Up"}
+                        </Text>
                     </View>
                 </View>
             </ImageBackground>
@@ -165,3 +194,4 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
     }
 });
+
