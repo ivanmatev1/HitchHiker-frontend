@@ -1,20 +1,16 @@
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { Stack, useRouter } from 'expo-router';
 import { useEffect } from 'react';
+import * as SecureStore from 'expo-secure-store';
 
 export default function RootLayout() {
   const router = useRouter();
   async function checkUserStatus() {
-    try {
-      const user = await GoogleSignin.getCurrentUser();
-      if (user === null) {
-        router.replace("/(login)");
-      } else {
-        console.log("user!!!!!:", user);
-        router.replace("/(home)");
-      }
-    } catch (error) {
-      console.log("Error fetching current user:", error);
+    const JWT_TOKEN = await SecureStore.getItemAsync("JWT_TOKEN");
+    console.log("JWT_TOKEN: ", JWT_TOKEN);
+    if(JWT_TOKEN === null){
+      router.replace("/(login)");
+    }else{
+      router.replace("/(home)");
     }
   }
 

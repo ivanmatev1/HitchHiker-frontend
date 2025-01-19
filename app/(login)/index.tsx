@@ -1,45 +1,58 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'expo-router';
 import { Text, View, StyleSheet, ImageBackground, TextInput, TouchableOpacity } from "react-native";
-import AntDesign from '@expo/vector-icons/AntDesign';
 import Entypo from '@expo/vector-icons/Entypo';
 import BouncyCheckbox from "react-native-bouncy-checkbox";
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
-
-GoogleSignin.configure({
-	webClientId: "142542102562-bsrn2s26j19t9hj8ahnriibul371tq2b.apps.googleusercontent.com",
-    offlineAccess: true,
-	scopes: ['profile', 'email'],
-});
-
 import WhiteHitchhiker from '@/assets/images/white HitchHiker.svg';
-
-const GoogleLogin = async () => {
-	await GoogleSignin.hasPlayServices();
-	const userInfo = await GoogleSignin.signIn();
-	return userInfo;
-};
+import { findUserByEmail, postUser } from '../components/requestHandler';
+import GoogleButton from '../components/googleButton';
+import LoginFunction from '../components/loginFunction';
 
 export default function LogIn() {
     // handle the switch between login and signup
     const [signup, setSignUp] = useState(false);
 
-    const [email, onChangeEmail] = useState('');
-    const [password, onChangePassword] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+
     const [hidePassword, setHidePassword] = useState(true);
 
     const router = useRouter();
 
-    async function LogInButtonFunction() {
-        console.log(email, password);
+    useEffect(() => {
+        setEmail('');
+        setPassword('');
+        setFirstName('');
+        setLastName('');
+    }, [signup]);
 
-		try {
-			const response = await GoogleLogin();
-			console.log(response.data);
-            router.replace("/(home)");
-		} catch (apiError) {
-			console.log(apiError);
-		}
+    async function normalLoginFunction() {
+        if(signup) {
+            try {
+                const userData = {
+                    first_name: firstName,
+                    last_name: lastName,
+                    email: email,
+                    password: password,
+                    birthday: "2024-12-10", // temporary until I implement the second SignIn screen
+                    provider: "local"
+                };
+                const response = await postUser(userData);
+                console.log("User registered successfully:", response);
+                await LoginFunction(email, password, "local");
+            } catch (error: any) {
+                console.error("Error registering user:", error.message);
+            }
+        }else{
+            try {
+                await findUserByEmail(email);
+                await LoginFunction(email, password, "local");
+            } catch (error) {
+                console.error(error);
+            }
+        }
     }
 
     return (
@@ -61,30 +74,25 @@ export default function LogIn() {
                                 <View style={{ width: "100%", flexDirection: "row", gap: 8 }}>
                                     <View style={{ flex: 1 }}>
                                         <Text style={styles.text}>First Name</Text>
-                                        <TextInput style={styles.inputField} placeholder="First Name" />
+                                        <TextInput style={styles.inputField} placeholder="First Name" onChangeText={setFirstName} value={firstName} />
                                     </View>
                                     <View style={{ flex: 1 }}>
                                         <Text style={styles.text}>Last Name</Text>
-                                        <TextInput style={styles.inputField} placeholder="Last Name" />
+                                        <TextInput style={styles.inputField} placeholder="Last Name" onChangeText={setLastName} value={lastName} />
                                     </View>
-                                </View>
-
-                                <View style={{ width: "100%" }}>
-                                    <Text style={styles.text}>Username</Text>
-                                    <TextInput style={styles.inputField} placeholder="Username" />
                                 </View>
                             </View>
                         ) : (null)
                         }
                         <View style={{ width: "100%" }}>
                             <Text style={styles.text}>Email</Text>
-                            <TextInput style={styles.inputField} placeholder="Email" onChangeText={onChangeEmail} value={email} inputMode='email' />
+                            <TextInput style={styles.inputField} placeholder="Email" onChangeText={setEmail} value={email} inputMode='email' />
                         </View>
 
                         <View style={{ width: "100%" }}>
                             <Text style={styles.text}>Password</Text>
                             <View style={styles.passwordContainer}>
-                                <TextInput style={styles.passwordInputField} placeholder="Password" onChangeText={onChangePassword} value={password} secureTextEntry={hidePassword} />
+                                <TextInput style={styles.passwordInputField} placeholder="Password" onChangeText={setPassword} value={password} secureTextEntry={hidePassword} />
                                 {/* Handles the switch between the icons */}
                                 {hidePassword ? (
                                     <Entypo name="eye-with-line" size={20} color="black" onPress={() => setHidePassword(!hidePassword)} />
@@ -104,14 +112,12 @@ export default function LogIn() {
                             textStyle={{ textDecorationLine: "none", color: "black", fontSize: 16 }}
                             style={{ marginLeft: 8, marginBottom: 8 }}
                         />
-                        <TouchableOpacity style={styles.button} onPress={LogInButtonFunction}>
+                        <TouchableOpacity style={styles.button} onPress={normalLoginFunction}>
                             <Text style={styles.buttonText}>{signup ? "Sign Up" : "Log In"}</Text>
                         </TouchableOpacity>
 
-                        <TouchableOpacity style={styles.googleButton} onPress={LogInButtonFunction}>
-                            <AntDesign name="google" size={28} color="black" />
-                            <Text style={styles.googleButtonText}> Sign in with Google</Text>
-                        </TouchableOpacity>
+                        <GoogleButton />
+
                         <Text style={styles.text} onPress={() => setSignUp(!signup)}>
                             {signup ? "Already have an account? Log In" : "Don't have an account? Sign Up"}
                         </Text>
