@@ -10,7 +10,7 @@ export default function RootLayout() {
     if(JWT_TOKEN === null){
       router.replace("/(login)");
     }else{
-      router.replace("/(home)");
+      router.replace("/(home)/(routes)");
     }
   }
 
@@ -21,7 +21,7 @@ export default function RootLayout() {
   return (
     <Stack>
       <Stack.Screen name="(login)" options={{ headerShown: false }} />
-      <Stack.Screen name="(home)" />
+      <Stack.Screen name="(home)" options={{ headerShown: false }}/>
     </Stack>
   );
 }

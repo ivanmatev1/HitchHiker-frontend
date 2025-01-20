@@ -2,10 +2,10 @@ import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { Link, router } from 'expo-router';
 import React, { } from 'react';
 import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
-import { findUserByEmail, getUsers, testRequest } from '../components/requestHandler';
+import { findUserByEmail, getUsers, testRequest } from '../../components/requestHandler';
 import * as SecureStore from 'expo-secure-store';
 
-export default function Home() {
+export default function Profile() {
     async function signOut() {
         try {
             await GoogleSignin.signOut();
@@ -32,7 +32,6 @@ export default function Home() {
 
     return (
         <View style={styles.container}>
-            <Text>Home</Text>
             <TouchableOpacity onPress={getUsers}>
                 <Text>Get Users</Text>
             </TouchableOpacity>

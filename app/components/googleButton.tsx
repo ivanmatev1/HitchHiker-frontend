@@ -35,7 +35,8 @@ export default function GoogleButton() {
                             email: googleResponse.data.user.email,
                             password: "TempararyPassword12!",  // temporary until I implement the second SignIn screen
                             birthday: "2024-12-10", // temporary until I implement the second SignIn screen
-                            provider: "google"
+                            provider: "google",
+                            photo: googleResponse.data.user.photo
                         };
     
                         await postUser(userData);
