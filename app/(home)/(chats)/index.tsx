@@ -28,7 +28,7 @@ const chatInfo = [
     },
     {
         image: null,
-        creator: "Sofia",
+        creator: "Mladenkata",
         startDestination: "Sofia",
         endDestination: "Samokov",
         id: 4

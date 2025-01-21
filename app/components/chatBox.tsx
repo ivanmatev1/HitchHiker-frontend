@@ -1,9 +1,10 @@
 import React from 'react';
 import { Image } from 'expo-image';
-import { Text, StyleSheet, View } from "react-native";
+import { Text, StyleSheet, View, TouchableOpacity } from "react-native";
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import AntDesign from '@expo/vector-icons/AntDesign';
+import { Link } from 'expo-router';
 
 type ChatBoxProps = {
     image: string | null;
@@ -13,9 +14,13 @@ type ChatBoxProps = {
     id: number
 };
 
-export default function ChatBox({image, creator, startDestination, endDestination, id}: ChatBoxProps) {
+export default function ChatBox({image, creator, startDestination, endDestination, id}: ChatBoxProps) {    
     return (
-        <View style={styles.container}>
+        <Link href={{
+            pathname: '/(home)/(chats)/[id]',
+            params: { id: id },
+          }}>
+         <View style={styles.container}>
             <Image
                 source={image ? { uri: image } : require("../../assets/images/defaultUser.jpg")}
                 style={styles.image}
@@ -33,6 +38,8 @@ export default function ChatBox({image, creator, startDestination, endDestinatio
             </View>
             <AntDesign name="right" size={28} color="rgb(20, 5, 18)" />
         </View>
+        </Link>
+       
     );
 }
 

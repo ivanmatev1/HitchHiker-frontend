@@ -1,10 +1,12 @@
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { Tabs } from 'expo-router';
+import { Tabs, useSegments } from 'expo-router';
 
 
 export default function TabLayout() {
+  const segments = useSegments();
+
   return (
     <Tabs screenOptions={{
       tabBarActiveTintColor: "rgb(20, 5, 18)",
@@ -39,6 +41,7 @@ export default function TabLayout() {
           tabBarShowLabel: false,
           tabBarIcon: ({ color }) => <Ionicons name="chatbox-ellipses" size={28} color={color} />,
           headerShown: false,
+          tabBarStyle: { display: segments[2] === "[id]" ? "none" : "flex" },
         }}
       />
 
