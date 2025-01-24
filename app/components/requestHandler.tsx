@@ -68,3 +68,32 @@ export async function testRequest() {
     throw new Error(error.response.data.message);
   }
 }
+
+export async function getChats() {
+  try {
+    const response = await apiClient.get(`/chats`);
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
+  }
+}
+
+
+export async function getChat(chatId: string) {
+  try{
+    const response = await apiClient.get(`/chats/${chatId}`);
+    return response.data;
+  }catch(error: any) {
+    throw new Error(error.response.data.message);
+  }
+}
+
+
+export async function getUser(){
+  try {
+    const response = await apiClient.get(`/auth/user`);
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
+  }
+}
