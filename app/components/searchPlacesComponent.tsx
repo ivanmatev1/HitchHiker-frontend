@@ -1,4 +1,4 @@
-import React, { useState, useRef, SetStateAction, Dispatch } from 'react';
+import React, { useState, useRef, SetStateAction, Dispatch, useEffect } from 'react';
 import { StyleSheet, TouchableOpacity } from "react-native";
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import AntDesign from '@expo/vector-icons/AntDesign';
@@ -12,16 +12,22 @@ interface SearchPlacesComponentProps {
 }
 
 export default function SearchPlacesComponent({marker, setMarker, placeholder, stops}: SearchPlacesComponentProps) {
-    const startRef = useRef<any>();
+    const ref = useRef<any>();
+
+    useEffect(() => {
+        if(marker){
+            ref.current?.setAddressText(marker?.name);
+        }
+        }, [marker]);
 
     return (
         <GooglePlacesAutocomplete
-                ref={startRef}
+                ref={ref}
                 placeholder={placeholder}
                 fetchDetails={true}
                 onPress={(data, details = null) => {
                     if (!details?.geometry.location.lat || !details?.geometry.location.lng) {
-                        startRef.current?.clear();
+                        ref.current?.clear();
                     } else {
                         setMarker({
                             latitude: details?.geometry.location.lat,
@@ -29,11 +35,8 @@ export default function SearchPlacesComponent({marker, setMarker, placeholder, s
                             name: data.description,
                             main_text: data.structured_formatting.main_text
                         });
-                        console.log(stops)
                         if(stops){
-                            console.log(startRef.current?.getAddressText());
-                            startRef.current?.clear();
-                            console.log(startRef.current?.getAddressText());
+                            ref.current?.clear();
                         }
                     }
                 }}
@@ -50,8 +53,8 @@ export default function SearchPlacesComponent({marker, setMarker, placeholder, s
                 
                 renderRightButton={() => (
                     <TouchableOpacity onPress={() => {
-                        startRef.current?.clear();
-                        startRef.current?.blur();
+                        ref.current?.clear();
+                        ref.current?.blur();
                         setMarker(null);
                     }} style={{ padding: 8 }}>
                         <AntDesign

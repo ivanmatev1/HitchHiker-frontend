@@ -11,14 +11,15 @@ const SOCKET_URL = 'http://10.0.2.2:3002';
 export default function Page() {
     const [messages, setMessages] = useState<IMessage[]>([])
     const [userId, setUserId] = useState<number>(0);
-    const { id } = useLocalSearchParams();
+    const { id, creatorName } = useLocalSearchParams();
     const navigation = useNavigation();
     const [socket, setSocket] = useState<Socket | null>(null);
 
     useEffect(() => {
+        console.log(id , creatorName)
         if (typeof id === 'string') { // only run if id is a string
             navigation.setOptions({
-                title: `Chat ${id}`,
+                title: `${creatorName}'s chat`,
             });
 
             const fetchChat = async () => {

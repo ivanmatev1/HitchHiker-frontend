@@ -8,38 +8,73 @@ import { Link } from 'expo-router';
 
 type ChatBoxProps = {
     image: string | null;
-    creator: string;
+    creator: any;
     startDestination: string;
     endDestination: string;
-    id: number
+    id: number;
+    stops: object[];
 };
 
-export default function ChatBox({image, creator, startDestination, endDestination, id}: ChatBoxProps) {    
+export default function ChatBox({ image, creator, startDestination, endDestination, id, stops }: ChatBoxProps) {
+    const truncateText = (text: string | undefined, maxLength: number) => {
+        if (!text) {
+            return "";
+        }
+        if (text.length > maxLength) {
+            return text.slice(0, maxLength) + "...";
+        } else {
+            return text;
+        }
+    };
+
     return (
         <Link href={{
             pathname: '/(home)/(chats)/[id]',
-            params: { id: id },
-          }}>
-         <View style={styles.container}>
-            <Image
-                source={image ? { uri: image } : require("../../assets/images/defaultUser.jpg")}
-                style={styles.image}
-            />
-            <View style={styles.infoBox}>
-                <View style={styles.titleBox}>
-                    <Text style={styles.title}>{creator}'s chat</Text>
-                </View>
+            params: { id: id, creatorName: `${creator.first_name} ${creator.last_name}` },
+        }}>
+            <View style={styles.container}>
+                <Image
+                    source={image ? { uri: image } : require("../../assets/images/defaultUser.jpg")}
+                    style={styles.image}
+                />
+                <View style={styles.infoBox}>
+                    <View style={styles.titleBox}>
+                        <Text style={styles.title}>{creator.first_name} {creator.last_name}'s chat</Text>
+                    </View>
+                    {/*
                 <View style={styles.routeBox}>
                     <MaterialCommunityIcons name="car-side" size={24} color="rgb(92, 87, 92)" />
                     <Text style={styles.textRoute} >{startDestination}</Text>
                     <FontAwesome name="long-arrow-right" size={24} color="rgb(92, 87, 92)" />
                     <Text style={styles.textRoute}>{endDestination}</Text>
                 </View>
+                */}
+                    <View style={styles.routeBox}>
+                        <MaterialCommunityIcons name="car-side" size={24} color="rgb(92, 87, 92)" />
+                        <Text style={styles.textRoute} >
+                            {truncateText(startDestination, 6)}
+                        </Text>
+
+                        {stops.length > 0 ?
+                            <View style={{ flexDirection: "row", alignItems: "center", }}>
+                                <FontAwesome name="long-arrow-right" size={24} color="rgb(92, 87, 92)" />
+                                <Text style={styles.textRoute}>({stops.length})</Text>
+                            </View>
+                            : null
+                        }
+
+                        <FontAwesome name="long-arrow-right" size={24} color="rgb(92, 87, 92)" />
+                        <Text style={styles.textRoute}>
+                            {truncateText(endDestination, 6)}
+                        </Text>
+                    </View>
+
+
+                </View>
+                <AntDesign name="right" size={28} color="rgb(20, 5, 18)" />
             </View>
-            <AntDesign name="right" size={28} color="rgb(20, 5, 18)" />
-        </View>
         </Link>
-       
+
     );
 }
 

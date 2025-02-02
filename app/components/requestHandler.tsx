@@ -97,3 +97,12 @@ export async function getUser(){
     throw new Error(error.response.data.message);
   }
 }
+
+export async function postRoute(userData: any) {
+  try {
+    const response = await apiClient.post(`/routes`, userData);
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
+  }
+}

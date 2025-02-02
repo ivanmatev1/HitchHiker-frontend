@@ -6,7 +6,7 @@ import { Dispatch, SetStateAction, useEffect } from "react";
 import { View, TouchableOpacity, SafeAreaView, FlatList, Text, StyleSheet } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
-interface mapsComponentsInteface {
+interface firstPageInteface {
     startMarker: MarkerInterface | null
     endMarker: MarkerInterface | null
     stopMarker: MarkerInterface | null
@@ -19,7 +19,8 @@ interface mapsComponentsInteface {
     setCoordinates: Dispatch<SetStateAction<{ latitude: number, longitude: number }[]>>
 }
 
-export default function FirstPage({ startMarker,
+export default function FirstPage({ 
+    startMarker,
     endMarker,
     stopMarker,
     stopMarkers,
@@ -29,7 +30,7 @@ export default function FirstPage({ startMarker,
     setStopMarker,
     setStopMarkers,
     setCoordinates
-}: mapsComponentsInteface) {
+}: firstPageInteface) {
 
     useEffect(() => {
         if (stopMarker) {
