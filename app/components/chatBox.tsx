@@ -41,14 +41,6 @@ export default function ChatBox({ image, creator, startDestination, endDestinati
                     <View style={styles.titleBox}>
                         <Text style={styles.title}>{creator.first_name} {creator.last_name}'s chat</Text>
                     </View>
-                    {/*
-                <View style={styles.routeBox}>
-                    <MaterialCommunityIcons name="car-side" size={24} color="rgb(92, 87, 92)" />
-                    <Text style={styles.textRoute} >{startDestination}</Text>
-                    <FontAwesome name="long-arrow-right" size={24} color="rgb(92, 87, 92)" />
-                    <Text style={styles.textRoute}>{endDestination}</Text>
-                </View>
-                */}
                     <View style={styles.routeBox}>
                         <MaterialCommunityIcons name="car-side" size={24} color="rgb(92, 87, 92)" />
                         <Text style={styles.textRoute} >

@@ -46,7 +46,7 @@ export async function findUserByEmail(email: string) {
       },
     });
     return response.data;
-  } catch (error:any) {
+  } catch (error: any) {
     throw new Error(error.response.data.message);
   }
 }
@@ -80,16 +80,16 @@ export async function getChats() {
 
 
 export async function getChat(chatId: string) {
-  try{
+  try {
     const response = await apiClient.get(`/chats/${chatId}`);
     return response.data;
-  }catch(error: any) {
+  } catch (error: any) {
     throw new Error(error.response.data.message);
   }
 }
 
 
-export async function getUser(){
+export async function getUser() {
   try {
     const response = await apiClient.get(`/auth/user`);
     return response.data;
@@ -101,6 +101,23 @@ export async function getUser(){
 export async function postRoute(userData: any) {
   try {
     const response = await apiClient.post(`/routes`, userData);
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
+  }
+}
+
+export async function filterRoutes(startLat: number | null, startLng: number | null, endLat: number | null, endLng: number | null, date: Date | null) {
+  try {
+    const response = await apiClient.get(`/routes/filter`, {
+      params: {
+        ...(startLat != null && { startLat }),
+        ...(startLng != null && { startLng }),
+        ...(endLat != null && { endLat }),
+        ...(endLng != null && { endLng }),
+        ...(date ? { date } : {}),
+      }
+    });
     return response.data;
   } catch (error: any) {
     throw new Error(error.response.data.message);

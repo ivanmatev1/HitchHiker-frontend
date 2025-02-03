@@ -16,7 +16,7 @@ export default function Chats() {
     const [chats, setChats] = useState<Chat[]>([]);
 
 
-    const fetchChats = async () => {
+    async function fetchChats() {
         try {
             const chats = await getChats();
             setChats(chats);
@@ -46,7 +46,7 @@ export default function Chats() {
     );
 }
 
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: "white",

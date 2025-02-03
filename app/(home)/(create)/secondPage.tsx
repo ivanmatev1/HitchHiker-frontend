@@ -1,9 +1,9 @@
-import React, { Dispatch, SetStateAction, useState } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { View, StyleSheet, Text, Button, Platform, TouchableOpacity, TextInput } from 'react-native';
 import DateTimePicker, { DateTimePickerEvent } from "@react-native-community/datetimepicker";
 import MarkerInterface from '@/app/interfaces/marker.interface';
 import RouteComponent from '@/app/components/routeComponent';
-import { postRoute } from '@/app/components/requestHandler';
+import { getUser, postRoute } from '@/app/components/requestHandler';
 import Toast from 'react-native-toast-message';
 import { router } from 'expo-router';
 
@@ -40,6 +40,21 @@ export default function SecondPage({
   const [passengers, setNumberOfPassengers] = useState<string>("");
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
+
+  const [creatorName, setCreatorName] = useState('');
+
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const user = await getUser();
+        setCreatorName(user.first_name + " " + user.last_name);
+      } catch (error) {
+        console.error("Error fetching user:", error);
+      }
+    };
+    fetchUser();
+  }, []);
 
   function handleDateChange(event: DateTimePickerEvent, selectedDate?: Date) {
     if (selectedDate) {
@@ -136,7 +151,7 @@ export default function SecondPage({
 
       <View style={{ width: "90%", margin: 20 }}>
         <Text style={{ color: "rgb(20, 5, 18)", fontSize: 16, marginBottom: 10, }}>This is how your route will appear to other users:</Text>
-        <RouteComponent {...{ startMarker, endMarker, stopMarkers, coordinates, date, passengers }} />
+        <RouteComponent {...{ startMarker, endMarker, stopMarkers, coordinates, date, passengers, creatorName }} />
       </View>
 
       {showDatePicker && (

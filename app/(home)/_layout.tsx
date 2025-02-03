@@ -2,6 +2,7 @@ import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Tabs, useSegments } from 'expo-router';
+import RoutesHeader from '../components/routesHeader';
 
 
 export default function TabLayout() {
@@ -20,9 +21,10 @@ export default function TabLayout() {
       <Tabs.Screen
         name="(routes)"
         options={{
+          title: "Routes",
           tabBarShowLabel: false,
           tabBarIcon: ({ color }) => <FontAwesome6 size={28} name="route" color={color} />,
-          headerShown: false,
+          header: () => <RoutesHeader />, 
         }}
       />
 
