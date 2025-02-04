@@ -3,7 +3,7 @@ import { View, StyleSheet, Text, Button, Platform, TouchableOpacity, TextInput }
 import DateTimePicker, { DateTimePickerEvent } from "@react-native-community/datetimepicker";
 import MarkerInterface from '@/app/interfaces/marker.interface';
 import RouteComponent from '@/app/components/routeComponent';
-import { getUser, postRoute } from '@/app/components/requestHandler';
+import { getUser, patchRoute, postRoute } from '@/app/components/requestHandler';
 import Toast from 'react-native-toast-message';
 import { router } from 'expo-router';
 
@@ -19,6 +19,8 @@ interface secondPageInteface {
   setStopMarkers: Dispatch<SetStateAction<MarkerInterface[]>>;
   setCoordinates: Dispatch<SetStateAction<{ latitude: number, longitude: number }[]>>;
   setFirstPageBool: Dispatch<SetStateAction<boolean>>;
+  mode: string;
+  id: string;
 }
 
 export default function SecondPage({
@@ -33,6 +35,8 @@ export default function SecondPage({
   setStopMarkers,
   setCoordinates,
   setFirstPageBool,
+  mode,
+  id
 }: secondPageInteface
 ) {
 
@@ -96,7 +100,12 @@ export default function SecondPage({
         passangers: +passengers,
         completed: false
       }
-      const response = await postRoute(newRoute);
+      if (mode === "Update") {
+        await patchRoute(newRoute, id);
+      }
+      if(mode === "Create"){
+        await postRoute(newRoute);
+      }
       setStartMarker(null);
       setEndMarker(null);
       setStopMarker(null);
@@ -146,12 +155,12 @@ export default function SecondPage({
       </View>
 
       <TouchableOpacity style={styles.createButton} onPress={handleCreateRoute}>
-        <Text style={styles.createButtonText}>Create</Text>
+        <Text style={styles.createButtonText}>{mode}</Text>
       </TouchableOpacity>
 
       <View style={{ width: "90%", margin: 20 }}>
         <Text style={{ color: "rgb(20, 5, 18)", fontSize: 16, marginBottom: 10, }}>This is how your route will appear to other users:</Text>
-        <RouteComponent {...{ startMarker, endMarker, stopMarkers, coordinates, date, passengers, creatorName }} />
+        <RouteComponent startMarker={startMarker} endMarker={endMarker} stopMarkers={stopMarkers} date={date} passengers={passengers} creatorName={creatorName} id={-1} />
       </View>
 
       {showDatePicker && (

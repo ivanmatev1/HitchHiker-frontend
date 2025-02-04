@@ -3,25 +3,19 @@ import { filterRoutes } from '@/app/components/requestHandler';
 import RouteComponent from '@/app/components/routeComponent';
 import MarkerInterface from '@/app/interfaces/marker.interface';
 import AntDesign from '@expo/vector-icons/AntDesign';
-import BottomSheet, { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { Link, useFocusEffect } from 'expo-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Text, View, StyleSheet, TouchableOpacity, FlatList } from "react-native";
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
 export default function BrowseRoutes() {
     const [routes, setRoutes] = useState<any>([]);
-    const [startLat, setStartLat] = useState(null);
-    const [startLng, setStartLng] = useState(null);
-    const [endLat, setEndLat] = useState(null);
-    const [endLng, setEndLng] = useState(null);
 
     const [filterBool, setFilterBool] = useState(false);
     const [filter, setFilter] = useState(false);
     const [startMarker, setStartMarker] = useState<MarkerInterface | null>(null);
     const [endMarker, setEndMarker] = useState<MarkerInterface | null>(null);
-    const [date, setDate] = useState<Date | null>(null);
+    const [date, setDate] = useState<Date | null>(new Date());
 
     async function fetchRoutes() {
         try {
@@ -90,6 +84,7 @@ export default function BrowseRoutes() {
                             date={new Date(item.date)}
                             passengers={item.passangers}
                             creatorName={item.creator.first_name + " " + item.creator.last_name}
+                            id={item.id}
                         />}
                         keyExtractor={item => item.id}
                     />
@@ -119,7 +114,7 @@ const styles = StyleSheet.create({
         borderWidth: 0.5,
         width: 100,
         borderRadius: 10,
-        marginBottom: 8
+        marginVertical: 8
     },
     filterButtonText: {
         color: "rgb(20, 5, 18)",

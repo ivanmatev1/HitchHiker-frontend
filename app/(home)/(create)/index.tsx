@@ -3,9 +3,10 @@ import { Text, View, StyleSheet, TouchableOpacity, ScrollView, SafeAreaView, Fla
 import MarkerInterface from '../../interfaces/marker.interface';
 import { router } from 'expo-router';
 import AntDesign from '@expo/vector-icons/AntDesign';
-import FirstPage from './firstPage';
+import FirstPage from '../../components/firstPage';
 import Toast from 'react-native-toast-message';
-import SecondPage from './secondPage';
+import SecondPage from '../../components/secondPage';
+import CreateControl from '@/app/components/createControl';
 
 export default function Create() {
     const [startMarker, setStartMarker] = useState<MarkerInterface | null>(null);
@@ -35,50 +36,16 @@ export default function Create() {
     }
 
     return (
-        <View style={styles.container}>
-            <View style={styles.header}>
-                {firstPageBool ?
-                    <TouchableOpacity onPress={handleCloseButtonPress}>
-                        <AntDesign
-                            name="close"
-                            size={28}
-                            color="rgb(20, 5, 18)"
-                            style={{ marginHorizontal: 16, marginVertical: 8 }}
-                        />
-                    </TouchableOpacity>
-                    :
-                    <TouchableOpacity onPress={() => setFirstPageBool(true)}>
-                        <AntDesign
-                            name="left"
-                            size={28}
-                            color="rgb(20, 5, 18)"
-                            style={{ marginHorizontal: 16, marginVertical: 8 }}
-                        />
-                    </TouchableOpacity>
-                }
-
-                <Text style={styles.title}>Create a Route</Text>
-
-                {firstPageBool ?
-                    <TouchableOpacity onPress={handleNextButtonPress}>
-                        <AntDesign
-                            name="right"
-                            size={28}
-                            color="rgb(20, 5, 18)"
-                            style={{ marginHorizontal: 16, marginVertical: 8 }}
-                        />
-                    </TouchableOpacity> : <View style={{ width: 50 }}></View>}
-
-            </View>
-            {firstPageBool ?
-                <FirstPage {...{ startMarker, endMarker, stopMarker, stopMarkers, coordinates, setStartMarker, setEndMarker, setStopMarker, setStopMarkers, setCoordinates }} />
-                :
-                <View style={{ width: "100%", height: "100%" }}>
-                    <SecondPage {...{ startMarker, endMarker, stopMarker, stopMarkers, coordinates, setStartMarker, setEndMarker, setStopMarker, setStopMarkers, setCoordinates, setFirstPageBool}}/>
-                </View>
-                }
-            <Toast />
-        </View>
+        <CreateControl
+            startMarker={startMarker}
+            endMarker={endMarker}
+            stopMarkers={stopMarkers}
+            setStartMarker={setStartMarker}
+            setEndMarker={setEndMarker}
+            setStopMarkers={setStopMarkers}
+            mode="Create"
+            id="" // wont be used in the create mode
+        />
     );
 }
 

@@ -41,7 +41,7 @@ export default function SearchPlacesComponent({marker, setMarker, placeholder, s
                     }
                 }}
                 query={{
-                    key: 'AIzaSyCHnCpw0VR8g2FqgCTOSKN7D8molHzDWl8',
+                    key: process.env.API_KEY,
                     language: 'en',
                 }}
                 styles={{

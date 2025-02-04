@@ -12,6 +12,7 @@ interface mapsComponentsInteface {
 
 export default function MapComponent({ startMarker, endMarker, stopMarkers, coordinates }: mapsComponentsInteface) {
     const [region, setRegion] = useState({ latitude: 37.78825, longitude: -122.4324, latitudeDelta: 0.0922, longitudeDelta: 0.0421 });
+
     useEffect(() => {
         if (startMarker && endMarker) {
             const latitudeDelta = Math.abs(Math.abs(endMarker.latitude!) - Math.abs(startMarker.latitude!)) * 2;

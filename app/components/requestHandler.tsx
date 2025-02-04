@@ -115,9 +115,72 @@ export async function filterRoutes(startLat: number | null, startLng: number | n
         ...(startLng != null && { startLng }),
         ...(endLat != null && { endLat }),
         ...(endLng != null && { endLng }),
-        ...(date ? { date } : {}),
+        ...(date != null? { date } : {}),
       }
     });
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
+  }
+}
+
+export async function getPersonalRoutes() {
+  try {
+    const response = await apiClient.get(`/routes/personal`);
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
+  }
+}
+
+export async function getRoute(routeId: string) {
+  try {
+    const response = await apiClient.get(`/routes/${routeId}`);
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
+  }
+}
+
+export async function postRouteRequest(routeId: number) {
+  try {
+    const response = await apiClient.post(`/route-requests`, {routeId});
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
+  }
+}
+
+export async function acceptRequest(requestId: string) {
+  try {
+    const response = await apiClient.delete(`/route-requests/accept/${requestId}`);
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
+  }
+}
+
+export async function denyRequest(requestId: string) {
+  try {
+    const response = await apiClient.delete(`/route-requests/deny/${requestId}`);
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
+  }
+}
+
+export async function patchRoute(userData: any, routeId: string) {
+  try {
+    const response = await apiClient.patch(`/routes/${routeId}`, userData);
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
+  }
+}
+
+export async function removeUser(userId: number, routeId: number) {
+  try {
+    const response = await apiClient.patch(`routes/remove-participant`, {userId, routeId});
     return response.data;
   } catch (error: any) {
     throw new Error(error.response.data.message);

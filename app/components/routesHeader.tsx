@@ -18,12 +18,13 @@ export default function RoutesHeader() {
 
 const styles = StyleSheet.create({
     header: {
-        height: 60,
+        height: 50,
         width: "100%",
         justifyContent: "center",
         alignItems: "center",
         flexDirection: "row",
-        
+        borderBottomWidth: 0.5,
+        borderRadius: 10,
     },
     title: {
         color: "rgb(20, 5, 18)",
