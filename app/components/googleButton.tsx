@@ -33,8 +33,8 @@ export default function GoogleButton() {
                             first_name: googleResponse.data.user.givenName,
                             last_name: googleResponse.data.user.familyName,
                             email: googleResponse.data.user.email,
-                            password: "TempararyPassword12!",  // temporary until I implement the second SignIn screen
-                            birthday: "2024-12-10", // temporary until I implement the second SignIn screen
+                            password: "TempararyPassword12!",  // temporary 
+                            birthday: "2024-12-10", // temporary 
                             provider: "google",
                             photo: googleResponse.data.user.photo
                         };

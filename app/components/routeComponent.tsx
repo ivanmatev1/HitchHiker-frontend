@@ -31,7 +31,7 @@ export default function RouteComponent({ startMarker, endMarker, stopMarkers, da
     return (
         <Link href={{
             pathname: '/(home)/(routes)/[id]',
-            params: { id: id},
+            params: { id: id },
         }}>
             <View style={styles.container}>
                 <View style={styles.routeBox}>
@@ -56,8 +56,12 @@ export default function RouteComponent({ startMarker, endMarker, stopMarkers, da
 
                 <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
                     <View style={styles.infoBox}>
-                        <Text style={styles.infoBoxText}>DATE: {new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric', }).format(date)}</Text>
-                        <Text style={styles.infoBoxText}>TIME: {new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false }).format(date)}</Text>
+                        <Text style={styles.infoBoxText}>
+                            DATE: {new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric', }).format(date)}
+                        </Text>
+                        <Text style={styles.infoBoxText}>
+                            TIME: {new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false }).format(date)}
+                        </Text>
                     </View>
 
                     <View style={{ width: 0.5, height: "100%", backgroundColor: "rgb(92, 87, 92)" }}>

@@ -1,4 +1,4 @@
-import MapView, { PROVIDER_GOOGLE,Marker, Polyline } from "react-native-maps";
+import MapView, { PROVIDER_GOOGLE, Marker, Polyline } from "react-native-maps";
 import MarkerInterface from "../interfaces/marker.interface";
 import { useEffect, useState } from "react";
 
@@ -6,7 +6,7 @@ interface mapsComponentsInteface {
     startMarker: MarkerInterface | null
     endMarker: MarkerInterface | null
     stopMarkers: MarkerInterface[]
-    coordinates : { latitude: number, longitude: number }[]
+    coordinates: { latitude: number, longitude: number }[]
 }
 
 
@@ -16,16 +16,31 @@ export default function MapComponent({ startMarker, endMarker, stopMarkers, coor
     useEffect(() => {
         if (startMarker && endMarker) {
             const latitudeDelta = Math.abs(Math.abs(endMarker.latitude!) - Math.abs(startMarker.latitude!)) * 2;
-            const longitudeDelta = Math.abs(Math.abs(endMarker.longitude!) - Math.abs(startMarker.longitude!)) * 2; 
-            setRegion({ latitude: startMarker.latitude!, longitude: startMarker.longitude!, latitudeDelta: latitudeDelta, longitudeDelta: longitudeDelta});
+            const longitudeDelta = Math.abs(Math.abs(endMarker.longitude!) - Math.abs(startMarker.longitude!)) * 2;
+            setRegion({
+                latitude: startMarker.latitude!,
+                longitude: startMarker.longitude!,
+                latitudeDelta: latitudeDelta,
+                longitudeDelta: longitudeDelta
+            });
         }
 
-        if(startMarker && !endMarker){
-            setRegion({ latitude: startMarker.latitude!, longitude: startMarker.longitude!, latitudeDelta: 0.1, longitudeDelta: 0.1 });
+        if (startMarker && !endMarker) {
+            setRegion({
+                latitude: startMarker.latitude!,
+                longitude: startMarker.longitude!,
+                latitudeDelta: 0.1,
+                longitudeDelta: 0.1
+            });
         }
 
-        if(!startMarker && endMarker){
-            setRegion({ latitude: endMarker.latitude!, longitude: endMarker.longitude!, latitudeDelta: 0.1, longitudeDelta: 0.1 });
+        if (!startMarker && endMarker) {
+            setRegion({
+                latitude: endMarker.latitude!,
+                longitude: endMarker.longitude!,
+                latitudeDelta: 0.1,
+                longitudeDelta: 0.1
+            });
         }
     }, [startMarker, endMarker]);
 

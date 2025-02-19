@@ -19,7 +19,7 @@ interface firstPageInteface {
     setCoordinates: Dispatch<SetStateAction<{ latitude: number, longitude: number }[]>>
 }
 
-export default function FirstPage({ 
+export default function FirstPage({
     startMarker,
     endMarker,
     stopMarker,
@@ -92,13 +92,17 @@ export default function FirstPage({
             <SafeAreaView style={styles.container}>
                 {/* Everything goes to 90% if the the first element is not to a 100%*/}
                 <View style={{ width: "100%" }}>
-                    <Text style={{fontSize: 1}}></Text>
+                    <Text style={{ fontSize: 1 }}></Text>
                 </View >
 
                 <View style={{ width: "90%" }}>
                     <Text style={styles.text}>Starting Point</Text>
                     <View style={styles.inputView}>
-                        <SearchPlacesComponent marker={startMarker} setMarker={setStartMarker} placeholder="Search for your starting point..." stops={false} />
+                        <SearchPlacesComponent
+                            marker={startMarker}
+                            setMarker={setStartMarker}
+                            placeholder="Search for your starting point..."
+                            stops={false} />
                     </View>
                 </View >
 
@@ -123,9 +127,14 @@ export default function FirstPage({
                     />
                 </View>
                 <View style={styles.map}>
-                    <MapComponent startMarker={startMarker} endMarker={endMarker} stopMarkers={stopMarkers} coordinates={coordinates} />
-
+                    <MapComponent
+                        startMarker={startMarker}
+                        endMarker={endMarker}
+                        stopMarkers={stopMarkers}
+                        coordinates={coordinates}
+                    />
                 </View>
+
             </SafeAreaView>
         </SafeAreaProvider>
     );

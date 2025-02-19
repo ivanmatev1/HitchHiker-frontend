@@ -60,15 +60,6 @@ export async function postLogin(userData: { email: string; password: string, pro
   }
 }
 
-export async function testRequest() {
-  try {
-    const response = await apiClient.get(`auth/test`);
-    return response.data;
-  } catch (error: any) {
-    throw new Error(error.response.data.message);
-  }
-}
-
 export async function getChats() {
   try {
     const response = await apiClient.get(`/chats`);

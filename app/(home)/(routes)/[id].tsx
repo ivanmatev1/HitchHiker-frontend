@@ -103,8 +103,8 @@ export default function RouteIdPage() {
                 {role === "creator" && item.id !== route.creator.id ?
                     <TouchableOpacity onPress={() => 
                         Alert.alert(
-                            "Confirmation", // Title
-                            "Are you sure you want to proceed?", // Message
+                            "Confirmation", 
+                            "Are you sure you want to proceed?", 
                             [
                                 {
                                     text: "Cancel",
@@ -161,7 +161,9 @@ export default function RouteIdPage() {
     function requestView(item: any) {
         return (
             <View style={styles.userView}>
-                <Text style={styles.userText} numberOfLines={1} ellipsizeMode="tail">{item.sender.first_name} {item.sender.last_name}</Text>
+                <Text style={styles.userText} numberOfLines={1} ellipsizeMode="tail">
+                    {item.sender.first_name} {item.sender.last_name}
+                </Text>
                 <TouchableOpacity onPress={() => handleDenyRequest(item.id)}>
                     <AntDesign
                         name="close"
