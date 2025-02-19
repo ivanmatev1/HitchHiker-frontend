@@ -1,4 +1,15 @@
 module.exports = {
-    presets: ['babel-preset-expo'],
-    plugins: ['module:react-native-dotenv'],
-  };
+  presets: ['babel-preset-expo'],
+  plugins: [
+    'module:react-native-dotenv',
+    [
+      'module-resolver',
+      {
+        root: ['./'],
+        alias: {
+          '@': './'
+        }
+      }
+    ]
+  ]
+};
