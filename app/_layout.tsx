@@ -16,6 +16,7 @@ export default function RootLayout() {
 
   useEffect(() => {
     checkUserStatus();
+    console.log("checkUserStatus");
   }, []);
 
   return (
