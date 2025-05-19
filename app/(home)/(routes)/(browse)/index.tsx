@@ -15,7 +15,7 @@ export default function BrowseRoutes() {
     const [filter, setFilter] = useState(false);
     const [startMarker, setStartMarker] = useState<MarkerInterface | null>(null);
     const [endMarker, setEndMarker] = useState<MarkerInterface | null>(null);
-    const [date, setDate] = useState<Date | null>(new Date());
+    const [date, setDate] = useState<Date | null>(null);
 
     async function fetchRoutes() {
         try {

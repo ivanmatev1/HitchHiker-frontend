@@ -143,6 +143,7 @@ export default function FirstPage({
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        width:400,
         backgroundColor: "white",
         alignItems: "center",
     },

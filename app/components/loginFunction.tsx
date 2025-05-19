@@ -12,7 +12,7 @@ export default async function LoginFunction(email: string, password: string, pro
         const response = await postLogin(userData);
         console.log("User logged in successfully:", response);
         await SecureStore.setItemAsync('JWT_TOKEN', response);
-        router.replace("/(home)/(routes)");
+        router.replace("/(home)/(profile)");
     } catch (error) {
         console.log("Error logging in user:", error);
     }

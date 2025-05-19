@@ -1,3 +1,4 @@
+import 'react-native-get-random-values';
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import SearchPlacesComponent from "./searchPlacesComponent";
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
