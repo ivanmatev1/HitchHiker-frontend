@@ -67,7 +67,26 @@ export default function CreateControl(
                     </TouchableOpacity>
                 }
 
-                <Text style={styles.title}>{mode} a Route</Text>
+                <View style={{ flexDirection: "row", gap: 4}}>
+                    <View style={{ justifyContent: "center", alignItems: "center" }}>
+                        <View style={firstPageBool ? styles.activeStep : styles.inactiveStep}>
+                            <Text style={{  color: firstPageBool ?  "white" : "rgb(20, 5, 18)", fontSize: 18, fontWeight: "700" }}>1</Text>
+                        </View>
+                        <Text style={{ fontSize: 12, fontWeight: "500" }}>Location</Text>
+                    </View>
+
+
+                    <View style={styles.dottedLine} />
+
+                    <View style={{ justifyContent: "center", alignItems: "center" }}>
+                        <View style={firstPageBool ? styles.inactiveStep : styles.activeStep}>
+                            <Text style={{ color: firstPageBool ? "rgb(20, 5, 18)" : "white", fontSize: 18, fontWeight: "700" }}>2</Text>
+                        </View>
+                        <Text style={{ fontSize: 12, fontWeight: "500" }}>Details</Text>
+                    </View>
+
+                </View>
+
 
                 {firstPageBool ?
                     <TouchableOpacity onPress={handleNextButtonPress}>
@@ -80,13 +99,14 @@ export default function CreateControl(
                     </TouchableOpacity> : <View style={{ width: 50 }}></View>}
 
             </View>
+
             {firstPageBool ?
                 <FirstPage {...{ startMarker, endMarker, stopMarker, stopMarkers, coordinates, setStartMarker, setEndMarker, setStopMarker, setStopMarkers, setCoordinates }} />
                 :
                 <View style={{ width: "100%", height: "100%" }}>
-                    <SecondPage {...{ startMarker, endMarker, stopMarker, stopMarkers, coordinates, setStartMarker, setEndMarker, setStopMarker, setStopMarkers, setCoordinates, setFirstPageBool, mode, id }}/>
+                    <SecondPage {...{ startMarker, endMarker, stopMarker, stopMarkers, coordinates, setStartMarker, setEndMarker, setStopMarker, setStopMarkers, setCoordinates, setFirstPageBool, mode, id }} />
                 </View>
-                }
+            }
             <Toast />
         </View>
     );
@@ -109,7 +129,36 @@ const styles = StyleSheet.create({
     header: {
         flexDirection: "row",
         alignItems: "center",
+        justifyContent: "space-between",
         width: "100%",
-        paddingVertical: 10
-    }
+        paddingVertical: 4,
+    },
+    inactiveStep: {
+        height: 48,
+        width: 48,
+        borderColor: "rgb(20, 5, 18)",
+        borderWidth: 2,
+        borderRadius: 24,
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    activeStep: {
+        height: 48,
+        width: 48,
+        borderColor: "rgb(20, 5, 18)",
+        backgroundColor: "rgb(20, 5, 18)",
+        color: "white",
+        borderWidth: 1,
+        borderRadius: 24,
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    dottedLine: {
+        borderBottomWidth: 2,
+        width: 24,
+        borderColor: "rgb(20, 5, 18)",
+        borderStyle: 'dotted',
+        marginTop: 24,
+        marginBottom: "auto",
+    },
 });

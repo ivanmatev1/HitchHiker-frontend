@@ -1,7 +1,7 @@
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { Link, router, useFocusEffect } from 'expo-router';
 import React, { useCallback, useEffect, useState } from 'react';
-import { Text, View, StyleSheet, TouchableOpacity, FlatList } from "react-native";
+import { Text, View, StyleSheet, TouchableOpacity, FlatList, ImageBackground } from "react-native";
 import { getPersonalRoutes, getUser, getUsers } from '../../components/requestHandler';
 import * as SecureStore from 'expo-secure-store';
 import WhiteHitchhiker from '@/assets/images/white HitchHiker.svg';
@@ -56,9 +56,15 @@ export default function Profile() {
     return (
         <View style={styles.container}>
             <View style={styles.profileContainer}>
-                <View style={styles.profileBar}>
-                    <WhiteHitchhiker width={72} height={72} style={styles.logo} />
-                </View>
+
+                <ImageBackground
+                    source={require('@/assets/images/purpleBackground3.png')}
+                    resizeMode="cover"
+                    style={{ width: "100%", height: 140 }}
+                >
+                    <WhiteHitchhiker width={72} height={72} style={{ margin: 16 }} />
+                </ImageBackground>
+                
 
                 <Image
                     source={user?.photo ? { uri: user?.photo } : require("../../../assets/images/defaultUser.jpg")}
@@ -213,4 +219,8 @@ const styles = StyleSheet.create({
 
 <View style={{ width: "100%", height: 10, marginBottom: 10 , backgroundColor: "red"}}>
                                 <Text>{item.name}</Text>
-                            </View>*/
+                            </View
+                            
+                            <View style={styles.profileBar}>
+                    <WhiteHitchhiker width={72} height={72} style={styles.logo} />
+                </View>>*/

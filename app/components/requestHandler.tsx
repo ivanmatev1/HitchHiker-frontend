@@ -81,7 +81,6 @@ export async function getChat(chatId: string) {
 
 
 export async function getUser() {
-  console.log(process.env.EXPO_PUBLIC_API_KEY);
   try {
     const response = await apiClient.get(`/auth/user`);
     return response.data;

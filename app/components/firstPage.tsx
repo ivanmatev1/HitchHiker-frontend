@@ -2,11 +2,11 @@ import MapComponent from "@/app/components/mapComponent";
 import SearchPlacesComponent from "@/app/components/searchPlacesComponent";
 import MarkerInterface from "@/app/interfaces/marker.interface";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import { Dispatch, SetStateAction, useEffect } from "react";
-import { View, TouchableOpacity, SafeAreaView, FlatList, Text, StyleSheet } from "react-native";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { View, TouchableOpacity, SafeAreaView, FlatList, Text, StyleSheet, ImageBackground } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
-interface firstPageInteface {
+interface firstPageInterface {
     startMarker: MarkerInterface | null
     endMarker: MarkerInterface | null
     stopMarker: MarkerInterface | null
@@ -30,7 +30,9 @@ export default function FirstPage({
     setStopMarker,
     setStopMarkers,
     setCoordinates
-}: firstPageInteface) {
+}: firstPageInterface) {
+    const [marker, setMarker] = useState<MarkerInterface | null>(null);
+    const [markers, setMarkers] = useState<MarkerInterface[]>([]);
 
     useEffect(() => {
         if (stopMarker) {
@@ -41,12 +43,14 @@ export default function FirstPage({
 
     useEffect(() => {
         const newCoordinates: { latitude: number, longitude: number }[] = [];
+        const newMarkers: MarkerInterface[] = [];
 
         if (startMarker) {
             newCoordinates.push({
                 latitude: startMarker.latitude!,
                 longitude: startMarker.longitude!,
             });
+            newMarkers.push(startMarker);
         }
 
         stopMarkers.forEach(marker => {
@@ -54,6 +58,7 @@ export default function FirstPage({
                 latitude: marker.latitude!,
                 longitude: marker.longitude!,
             });
+            newMarkers.push(marker);
         });
 
         if (endMarker) {
@@ -61,13 +66,56 @@ export default function FirstPage({
                 latitude: endMarker.latitude!,
                 longitude: endMarker.longitude!,
             });
+            newMarkers.push(endMarker);
         }
 
         setCoordinates(newCoordinates);
     }, [startMarker, endMarker, stopMarkers]);
 
-    function deleteStopMarker(item: MarkerInterface) {
-        setStopMarkers((prev) => prev.filter((marker) => marker.name !== item.name));
+
+
+    useEffect(() => {
+        if (startMarker) {
+            setMarkers([startMarker]);
+        }
+        if (stopMarkers.length > 0) {
+            setMarkers((prev) => [...prev, ...stopMarkers]);
+        }
+        if (endMarker) {
+            setMarkers((prev) => [...prev, endMarker]);
+        }
+    }, []);
+
+    useEffect(() => {
+        if (markers.length === 0) {
+            setStartMarker(null);
+            setEndMarker(null);
+            setStopMarkers([]);
+        } else if (markers.length === 1) {
+            setStartMarker(markers[0]);
+            setEndMarker(null);
+            setStopMarkers([]);
+        } else if (markers.length === 2) {
+            setStartMarker(markers[0]);
+            setEndMarker(markers[1]);
+            setStopMarkers([]);
+        } else {
+            setStartMarker(markers[0]);
+            setEndMarker(markers[markers.length - 1]);
+            setStopMarkers(markers.slice(1, -1));
+        }
+    }, [markers]);
+
+    useEffect(() => {
+        if (marker) {
+            setMarkers([...markers, marker]);
+            setMarker(null);
+        }
+    }, [marker]);
+
+
+    function deleteMarker(item: MarkerInterface) {
+        setMarkers((prev) => prev.filter((marker) => marker.name !== item.name));
     }
 
     function stopView(item: MarkerInterface) {
@@ -75,7 +123,7 @@ export default function FirstPage({
             <View style={styles.stopView}>
                 <Text style={styles.stopText} numberOfLines={1} ellipsizeMode="tail">{item.name}</Text>
 
-                <TouchableOpacity onPress={() => deleteStopMarker(item)}>
+                <TouchableOpacity onPress={() => deleteMarker(item)}>
                     <AntDesign
                         name="close"
                         size={24}
@@ -88,44 +136,28 @@ export default function FirstPage({
     }
 
     return (
-        <SafeAreaProvider style={{ flex: 1, paddingHorizontal: 0 }}>
+        <SafeAreaProvider style={{ width: "100%", height: "100%", paddingHorizontal: 0 }}>
             <SafeAreaView style={styles.container}>
-                {/* Everything goes to 90% if the the first element is not to a 100%*/}
-                <View style={{ width: "100%" }}>
-                    <Text style={{ fontSize: 1 }}></Text>
-                </View >
-
-                <View style={{ width: "90%" }}>
-                    <Text style={styles.text}>Starting Point</Text>
+                
+                <View style={styles.inputContainer}>
                     <View style={styles.inputView}>
-                        <SearchPlacesComponent
-                            marker={startMarker}
-                            setMarker={setStartMarker}
-                            placeholder="Search for your starting point..."
-                            stops={false} />
+                        <SearchPlacesComponent marker={marker} setMarker={setMarker} placeholder="Search for your stops..." stops={true} />
                     </View>
-                </View >
+                    {markers.length <= 0 ?
+                        <Text style={styles.text}>No stops yet.</Text>
+                        :
+                        <FlatList
+                            data={markers}
+                            renderItem={({ item }) => stopView(item)}
+                            keyExtractor={item => item.name} // za sega 
+                            contentContainerStyle={{ paddingVertical: 10 }}
+                            style={styles.stopsList}
+                        />
+                    }
 
-                <View style={{ width: "90%" }}>
-                    <Text style={styles.text}>End Point</Text>
-                    <View style={styles.inputView}>
-                        <SearchPlacesComponent marker={endMarker} setMarker={setEndMarker} placeholder="Search for your end point..." stops={false} />
-                    </View>
+
                 </View>
 
-                <View style={{ flex: 1, width: "90%" }}>
-                    <Text style={styles.text}>Stops</Text>
-                    <View style={styles.inputView}>
-                        <SearchPlacesComponent marker={stopMarker} setMarker={setStopMarker} placeholder="Search for your stops..." stops={true} />
-                    </View>
-                    <FlatList
-                        data={stopMarkers}
-                        renderItem={({ item }) => stopView(item)}
-                        keyExtractor={item => item.name} // za sega 
-                        contentContainerStyle={{ paddingVertical: 10 }}
-                        style={styles.stopsList}
-                    />
-                </View>
                 <View style={styles.map}>
                     <MapComponent
                         startMarker={startMarker}
@@ -134,7 +166,6 @@ export default function FirstPage({
                         coordinates={coordinates}
                     />
                 </View>
-
             </SafeAreaView>
         </SafeAreaProvider>
     );
@@ -143,18 +174,19 @@ export default function FirstPage({
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        width:400,
-        backgroundColor: "white",
+        backgroundColor: "rgb(245, 245, 245)",
         alignItems: "center",
     },
     map: {
-        width: "90%",
-        borderRadius: 20,
-        marginVertical: 10,
-        height: 320,
+        width: "100%",
+        height: 420,
         zIndex: 0,
-        borderWidth: 0.5,
+        borderWidth: 4,
+        borderColor: "white",
         overflow: "hidden",
+        borderTopLeftRadius: 32,
+        borderTopRightRadius: 32,
+        marginTop: 8,
     },
     text: {
         color: "rgb(20, 5, 18)",
@@ -163,20 +195,19 @@ const styles = StyleSheet.create({
         marginTop: 12
     },
     inputView: {
-        width: "100%",
+        width: "90%",
         height: 45,
     },
     stopsList: {
         flex: 1,
-        borderWidth: 0.5,
-        borderBottomLeftRadius: 15,
-        borderBottomRightRadius: 15
+        width: "90%"
     },
     stopView: {
         paddingHorizontal: 10,
         width: "100%",
-        borderBottomWidth: 0.5,
-        borderTopWidth: 0.5,
+        borderWidth: 1,
+        marginBottom: 8,
+        borderRadius: 16,
         flexDirection: "row",
     },
     stopText: {
@@ -184,5 +215,14 @@ const styles = StyleSheet.create({
         fontSize: 16,
         paddingVertical: 10,
         flex: 1
-    }
+    },
+    inputContainer: {
+        flex: 1,
+        width: "100%",
+        backgroundColor: "white",
+        paddingVertical: 16,
+        alignItems: "center",
+        borderBottomLeftRadius: 32,
+        borderBottomRightRadius: 32,
+    },
 });

@@ -1,11 +1,12 @@
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import { View, StyleSheet, Text, Button, Platform, TouchableOpacity, TextInput } from 'react-native';
+import { View, StyleSheet, Text, Button, Platform, TouchableOpacity, TextInput, ImageBackground } from 'react-native';
 import DateTimePicker, { DateTimePickerEvent } from "@react-native-community/datetimepicker";
 import MarkerInterface from '@/app/interfaces/marker.interface';
 import RouteComponent from '@/app/components/routeComponent';
 import { getUser, patchRoute, postRoute } from '@/app/components/requestHandler';
 import Toast from 'react-native-toast-message';
 import { router } from 'expo-router';
+import WhiteHitchhiker from '@/assets/images/white HitchHiker.svg';
 
 interface secondPageInteface {
   startMarker: MarkerInterface | null
@@ -87,7 +88,7 @@ export default function SecondPage({
     if (!passengers || +passengers < 1) {
       Toast.show({
         type: 'error',
-        text1: 'Passangers must be at least 1',
+        text1: 'Passengers must be at least 1',
       });
       return;
     }
@@ -103,7 +104,7 @@ export default function SecondPage({
       if (mode === "Update") {
         await patchRoute(newRoute, id);
       }
-      if(mode === "Create"){
+      if (mode === "Create") {
         await postRoute(newRoute);
       }
       setStartMarker(null);
@@ -121,68 +122,80 @@ export default function SecondPage({
 
   return (
     <View style={styles.container}>
-      <View style={styles.pickerContainer}>
-        <Text style={styles.text}>Select a date</Text>
-        <TouchableOpacity style={styles.pickerButton} onPress={() => setShowDatePicker(true)}>
-          <Text style={styles.pickerButtonText}>
-            {new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric', }).format(date)}
-          </Text>
-        </TouchableOpacity>
-      </View>
 
-      <View style={styles.doubleContainer}>
+      <ImageBackground
+        source={require('@/assets/images/purpleBackground1.png')}
+        resizeMode="cover"
+        style={{ width: "100%", height: "100%", position: "absolute", top: 0, left: 0 }}
+      >
+        <WhiteHitchhiker width={72} height={72} style={{ margin: 16 }} />
+      </ImageBackground>
 
-        <View style={{ flex: 1 }}>
-          <Text style={styles.text}>Select an hour</Text>
-          <TouchableOpacity style={styles.pickerButton} onPress={() => setShowTimePicker(true)} >
+      <View style={styles.content}>
+        <View style={styles.pickerContainer}>
+          <Text style={styles.text}>Select a date</Text>
+          <TouchableOpacity style={styles.pickerButton} onPress={() => setShowDatePicker(true)}>
             <Text style={styles.pickerButtonText}>
-              {new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false }).format(date)}
+              {new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric', }).format(date)}
             </Text>
           </TouchableOpacity>
         </View>
 
-        <View style={{ flex: 1 }}>
-          <Text style={styles.text}>Passangers</Text>
-          <TextInput
-            style={styles.passangersInput}
-            value={passengers}
-            keyboardType="numeric"
-            onChangeText={handleNumber}
-            placeholder="e.g. 5"
-          />
+        <View style={styles.doubleContainer}>
+
+          <View style={{ flex: 1 }}>
+            <Text style={styles.text}>Select an hour</Text>
+            <TouchableOpacity style={styles.pickerButton} onPress={() => setShowTimePicker(true)} >
+              <Text style={styles.pickerButtonText}>
+                {new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false }).format(date)}
+              </Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={{ flex: 1 }}>
+            <Text style={styles.text}>Passengers</Text>
+            <TextInput
+              style={styles.passengersInput}
+              value={passengers}
+              keyboardType="numeric"
+              onChangeText={handleNumber}
+              placeholder="e.g. 5"
+            />
+          </View>
+
         </View>
 
+        <TouchableOpacity style={styles.createButton} onPress={handleCreateRoute}>
+          <Text style={styles.createButtonText}>{mode}</Text>
+        </TouchableOpacity>
+
+        <View style={{ width: "90%", marginTop: 16 }}>
+          <Text style={{ color: "rgb(20, 5, 18)", fontSize: 16, marginBottom: 10, }}>This is how your route will appear to other users:</Text>
+          <RouteComponent startMarker={startMarker} endMarker={endMarker} stopMarkers={stopMarkers} date={date} passengers={passengers} creatorName={creatorName} id={-1} />
+        </View>
+
+        {showDatePicker && (
+          <DateTimePicker
+            value={date}
+            mode="date"
+            is24Hour={true}
+            minimumDate={new Date()}
+            display={'default'}
+            onChange={handleDateChange}
+          />
+        )}
+
+        {showTimePicker && (
+          <DateTimePicker
+            value={date}
+            mode="time"
+            is24Hour={true}
+            display={'default'}
+            onChange={handleTimeChange}
+          />
+        )}
       </View>
 
-      <TouchableOpacity style={styles.createButton} onPress={handleCreateRoute}>
-        <Text style={styles.createButtonText}>{mode}</Text>
-      </TouchableOpacity>
-
-      <View style={{ width: "90%", margin: 20 }}>
-        <Text style={{ color: "rgb(20, 5, 18)", fontSize: 16, marginBottom: 10, }}>This is how your route will appear to other users:</Text>
-        <RouteComponent startMarker={startMarker} endMarker={endMarker} stopMarkers={stopMarkers} date={date} passengers={passengers} creatorName={creatorName} id={-1} />
-      </View>
-
-      {showDatePicker && (
-        <DateTimePicker
-          value={date}
-          mode="date"
-          is24Hour={true}
-          minimumDate={new Date()}
-          display={'default'}
-          onChange={handleDateChange}
-        />
-      )}
-
-      {showTimePicker && (
-        <DateTimePicker
-          value={date}
-          mode="time"
-          is24Hour={true}
-          display={'default'}
-          onChange={handleTimeChange}
-        />
-      )}
     </View>
   );
 }
@@ -191,7 +204,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
-    paddingTop: 20,
+    backgroundColor: "rgb(245, 245, 245)",
+    backgroundImage: "linear-gradient(to bottom, rgb(245, 245, 245), white)",
+    justifyContent: "flex-end",
   },
   title: {
     fontSize: 20,
@@ -207,7 +222,7 @@ const styles = StyleSheet.create({
   },
   pickerButton: {
     backgroundColor: "white",
-    borderWidth: 0.5,
+    borderWidth: 1,
     borderColor: "rgb(20, 5, 18)",
     borderRadius: 10,
     justifyContent: "center",
@@ -241,9 +256,9 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     gap: 10,
   },
-  passangersInput: {
+  passengersInput: {
     backgroundColor: "white",
-    borderWidth: 0.5,
+    borderWidth: 1,
     borderColor: "rgb(20, 5, 18)",
     borderRadius: 10,
     marginBottom: 8,
@@ -252,5 +267,16 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "rgb(20, 5, 18)",
     fontSize: 20,
+  },
+  content: {
+    width: "100%",
+    height: "auto",
+    backgroundColor: "white",
+    alignItems: "center",
+    paddingBottom: 92, // TabBar(60) + paddingBottom(16)
+    borderTopLeftRadius: 32,
+    borderTopRightRadius: 32,
+    paddingTop: 32,
+    zIndex: 10,
   }
 });

@@ -6,7 +6,7 @@ import MarkerInterface from "../interfaces/marker.interface";
 import DateTimePicker, { DateTimePickerEvent } from "@react-native-community/datetimepicker";
 import AntDesign from "@expo/vector-icons/AntDesign";
 
-interface firstPageInteface {
+interface firstPageInterface {
     startMarker: MarkerInterface | null
     endMarker: MarkerInterface | null
     date: Date | null
@@ -26,7 +26,7 @@ export default function FilterModal({
     setDate,
     setFilter,
     setFilterBool
-}: firstPageInteface) {
+}: firstPageInterface) {
     const [showDatePicker, setShowDatePicker] = useState(false);
 
     function handleDateChange(event: DateTimePickerEvent, selectedDate?: Date) {
