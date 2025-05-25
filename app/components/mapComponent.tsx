@@ -2,7 +2,7 @@ import MapView, { PROVIDER_GOOGLE, Marker, Polyline } from "react-native-maps";
 import MarkerInterface from "../interfaces/marker.interface";
 import { useEffect, useState } from "react";
 
-interface mapsComponentsInteface {
+interface mapsComponentsInterface {
     startMarker: MarkerInterface | null
     endMarker: MarkerInterface | null
     stopMarkers: MarkerInterface[]
@@ -10,7 +10,7 @@ interface mapsComponentsInteface {
 }
 
 
-export default function MapComponent({ startMarker, endMarker, stopMarkers, coordinates }: mapsComponentsInteface) {
+export default function MapComponent({ startMarker, endMarker, stopMarkers, coordinates }: mapsComponentsInterface) {
     const [region, setRegion] = useState({ latitude: 37.78825, longitude: -122.4324, latitudeDelta: 0.0922, longitudeDelta: 0.0421 });
 
     useEffect(() => {

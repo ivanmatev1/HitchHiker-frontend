@@ -2,7 +2,7 @@ import axios from 'axios';
 import * as SecureStore from 'expo-secure-store';
 
 const apiClient = axios.create({
-  baseURL: 'http://10.0.2.2:3000',
+  baseURL: process.env.EXPO_PUBLIC_BACKEND_URL,
 });
 
 apiClient.interceptors.request.use(
@@ -81,6 +81,7 @@ export async function getChat(chatId: string) {
 
 
 export async function getUser() {
+  console.log(process.env.EXPO_PUBLIC_API_KEY);
   try {
     const response = await apiClient.get(`/auth/user`);
     return response.data;

@@ -41,7 +41,7 @@ export default function SearchPlacesComponent({marker, setMarker, placeholder, s
                     }
                 }}
                 query={{
-                    key: process.env.PUBLIC_EXPO_API_KEY,
+                    key: process.env.EXPO_PUBLIC_API_KEY,
                     language: 'en',
                 }}
                 styles={{

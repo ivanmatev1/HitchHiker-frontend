@@ -1,10 +1,8 @@
-import FontAwesome from "@expo/vector-icons/FontAwesome";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { View, Text, StyleSheet } from "react-native";
 import MarkerInterface from "../interfaces/marker.interface";
 import { Link } from "expo-router";
 import Octicons from '@expo/vector-icons/Octicons';
-import Entypo from '@expo/vector-icons/Entypo';
 
 interface routeComponentInterface {
     startMarker: MarkerInterface | null
