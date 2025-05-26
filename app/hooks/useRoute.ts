@@ -1,4 +1,4 @@
-import { acceptRequest, denyRequest, getRoute, getUser, postRouteRequest, removeUser } from '@/app/components/requestHandler';
+import { acceptRequest, completeRoute, denyRequest, getRoute, getUser, postRouteRequest, removeUser } from '@/app/components/requestHandler';
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import Toast from 'react-native-toast-message';
 
@@ -40,6 +40,15 @@ export async function handleRequestToJoin(id: any) {
 export async function kickParticipant(userId: number, id: any, setRoute: Dispatch<SetStateAction<any>>, setRole: Dispatch<SetStateAction<string>>) {
     try {
         await removeUser(userId, +id);
+        fetchRoute(id, setRoute, setRole);
+    } catch (error) {
+        console.error('Failed to deny request:', error);
+    }
+}
+
+export async function handleCompleteRoute(id: any, setRoute: Dispatch<SetStateAction<any>>, setRole: Dispatch<SetStateAction<string>>) {
+    try {
+        await completeRoute(id);
         fetchRoute(id, setRoute, setRole);
     } catch (error) {
         console.error('Failed to deny request:', error);

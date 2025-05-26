@@ -27,14 +27,14 @@ export default function participantView(item: any, route: any, role: string, id:
                 <TouchableOpacity onPress={() =>
                     Alert.alert(
                         "Confirmation",
-                        "Are you sure you want to proceed?",
+                        "Are you sure you want to kick this participant?",
                         [
                             {
                                 text: "Cancel",
                                 style: "cancel"
                             },
                             {
-                                text: "OK",
+                                text: "Yes",
                                 onPress: () => kickParticipant(item.id, id, setRoute, setRole),
                             }
                         ]

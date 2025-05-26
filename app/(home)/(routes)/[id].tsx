@@ -2,8 +2,8 @@ import MapComponent from '@/app/components/mapComponent';
 import MarkerInterface from '@/app/interfaces/marker.interface';
 import { Link, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { Text, View, StyleSheet, TouchableOpacity, FlatList, ActivityIndicator } from "react-native";
-import { fetchRoute, handleRequestToJoin } from '@/app/hooks/useRoute';
+import { Text, View, StyleSheet, TouchableOpacity, FlatList, ActivityIndicator, Alert } from "react-native";
+import { fetchRoute, handleCompleteRoute, handleRequestToJoin } from '@/app/hooks/useRoute';
 import participantView from '@/app/components/participantView';
 import requestView from '@/app/components/requestView';
 import { router } from 'expo-router';
@@ -106,30 +106,71 @@ export default function RouteIdPage() {
                             </Text>
                         </View>
 
-                        
+
 
 
                         {moreInfo ? <MoreRouteInfo route={route} role={role} id={id} setRoute={setRoute} setRole={setRole} /> : null}
 
 
                         <View style={{ width: "100%", alignItems: "flex-end" }}>
-                            {role === "creator" ?
-                                <Link
-                                    href={{
-                                        pathname: '/(home)/(routes)/update',
-                                        params: { id: id },
-                                    }}
-                                    style={{ backgroundColor: "rgb(20, 5, 18)", padding: 10, borderRadius: 10 }}
-                                >
-                                    <Text style={{ color: "white", fontSize: 20, fontWeight: "bold" }}>Update</Text>
-                                </Link>
-                                : null}
+                            {role === "creator" ? (
+                                <View style={{ flexDirection: "row", gap: 8 }}>
+                                    <Link
+                                        href={{
+                                            pathname: '/(home)/(routes)/update',
+                                            params: { id: id },
+                                        }}
+                                        style={{ backgroundColor: "rgb(20, 5, 18)", padding: 10, borderRadius: 10, marginBottom: 10 }}
+                                    >
+                                        <Text style={{ color: "white", fontSize: 20, fontWeight: "bold" }}>Update</Text>
+                                    </Link>
+
+                                    {route.completed ? (
+                                        <View style={{ borderWidth: 1, borderColor: "rgb(20, 5, 18)", padding: 10, borderRadius: 10, marginBottom: 10 }}>
+                                            <Text style={{ color: "rgb(20, 5, 18)", fontSize: 20, fontWeight: "bold" }}>Completed</Text>
+                                        </View>
+                                    ) : (
+                                        <TouchableOpacity
+                                            style={{ backgroundColor: "rgb(20, 5, 18)", padding: 10, borderRadius: 10, marginBottom: 10 }}
+                                            onPress={() =>
+                                                Alert.alert(
+                                                    "Confirmation",
+                                                    "Are you sure you want to complete this route?",
+                                                    [
+                                                        {
+                                                            text: "Cancel",
+                                                            style: "cancel"
+                                                        },
+                                                        {
+                                                            text: "Yes",
+                                                            onPress: () => handleCompleteRoute(id, setRoute, setRole),
+                                                        }
+                                                    ]
+                                                )
+                                            }
+                                        >
+                                            <Text style={{ color: "white", fontSize: 20, fontWeight: "bold" }}>Complete</Text>
+                                        </TouchableOpacity>
+                                    )}
+                                </View>
+                            ) : null}
+
+
                             {role === "viewer" ?
                                 <TouchableOpacity
                                     style={{ backgroundColor: "rgb(20, 5, 18)", padding: 10, borderRadius: 10 }}
                                     onPress={() => handleRequestToJoin(id)}
                                 >
-                                    <Text style={{ color: "white", fontSize: 20, fontWeight: "bold" }}>Request to Join</Text>
+                                    <Text style={{ color: "white", fontSize: 20, fontWeight: "bold" }}>Request</Text>
+                                </TouchableOpacity>
+                                : null}
+
+                            {role === "participant" ?
+                                <TouchableOpacity
+                                    style={{ backgroundColor: "rgb(20, 5, 18)", padding: 10, borderRadius: 10 }}
+                                    onPress={() => handleRequestToJoin(id)}
+                                >
+                                    <Text style={{ color: "white", fontSize: 20, fontWeight: "bold" }}>Leave</Text>
                                 </TouchableOpacity>
                                 : null}
                         </View>

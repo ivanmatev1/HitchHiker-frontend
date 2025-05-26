@@ -18,8 +18,6 @@ export default function Profile() {
     async function fetchRoutes() {
         try {
             const routes = await getPersonalRoutes();
-            routes.data.forEach((element: any) => {
-            });
             setRoutes(routes);
         } catch (error) {
             console.error('Failed to fetch routes:', error);

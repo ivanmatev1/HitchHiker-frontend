@@ -118,6 +118,7 @@ export async function filterRoutes(startLat: number | null, startLng: number | n
 export async function getPersonalRoutes() {
   try {
     const response = await apiClient.get(`/routes/personal`);
+    console.log(response.data);
     return response.data;
   } catch (error: any) {
     throw new Error(error.response.data.message);
@@ -163,6 +164,15 @@ export async function denyRequest(requestId: string) {
 export async function patchRoute(userData: any, routeId: string) {
   try {
     const response = await apiClient.patch(`/routes/${routeId}`, userData);
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
+  }
+}
+
+export async function completeRoute(routeId: string) {
+  try {
+    const response = await apiClient.patch(`/routes/complete/${routeId}`);
     return response.data;
   } catch (error: any) {
     throw new Error(error.response.data.message);
