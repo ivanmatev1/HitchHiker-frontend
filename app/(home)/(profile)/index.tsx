@@ -19,7 +19,6 @@ export default function Profile() {
         try {
             const routes = await getPersonalRoutes();
             routes.data.forEach((element: any) => {
-                console.log(element.participants, element.date);
             });
             setRoutes(routes);
         } catch (error) {
@@ -48,7 +47,6 @@ export default function Profile() {
             try {
                 const user = await getUser();
                 setUser(user);
-                console.log(user);
             } catch (error) {
                 console.error("Error fetching user:", error);
             }
@@ -219,13 +217,3 @@ const styles = StyleSheet.create({
         width: 80,
     }
 });
-/*
-
-
-<View style={{ width: "100%", height: 10, marginBottom: 10 , backgroundColor: "red"}}>
-                                <Text>{item.name}</Text>
-                            </View
-                            
-                            <View style={styles.profileBar}>
-                    <WhiteHitchhiker width={72} height={72} style={styles.logo} />
-                </View>>*/

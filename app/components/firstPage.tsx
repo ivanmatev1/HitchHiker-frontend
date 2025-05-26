@@ -138,7 +138,14 @@ export default function FirstPage({
     return (
         <SafeAreaProvider style={{ width: "100%", height: "100%", paddingHorizontal: 0 }}>
             <SafeAreaView style={styles.container}>
-                
+                <View style={styles.map}>
+                    <MapComponent
+                        startMarker={startMarker}
+                        endMarker={endMarker}
+                        stopMarkers={stopMarkers}
+                        coordinates={coordinates}
+                    />
+                </View>
                 <View style={styles.inputContainer}>
                     <View style={styles.inputView}>
                         <SearchPlacesComponent marker={marker} setMarker={setMarker} placeholder="Search for your stops..." stops={true} />
@@ -157,15 +164,6 @@ export default function FirstPage({
 
 
                 </View>
-
-                <View style={styles.map}>
-                    <MapComponent
-                        startMarker={startMarker}
-                        endMarker={endMarker}
-                        stopMarkers={stopMarkers}
-                        coordinates={coordinates}
-                    />
-                </View>
             </SafeAreaView>
         </SafeAreaProvider>
     );
@@ -179,14 +177,9 @@ const styles = StyleSheet.create({
     },
     map: {
         width: "100%",
-        height: 420,
+        flex: 1,
         zIndex: 0,
-        borderWidth: 4,
-        borderColor: "white",
         overflow: "hidden",
-        borderTopLeftRadius: 32,
-        borderTopRightRadius: 32,
-        marginTop: 8,
     },
     text: {
         color: "rgb(20, 5, 18)",
@@ -217,12 +210,18 @@ const styles = StyleSheet.create({
         flex: 1
     },
     inputContainer: {
-        flex: 1,
         width: "100%",
+        height: 240,
         backgroundColor: "white",
         paddingVertical: 16,
         alignItems: "center",
-        borderBottomLeftRadius: 32,
-        borderBottomRightRadius: 32,
+        borderTopLeftRadius: 32,
+        borderTopRightRadius: 32,
+        zIndex: 10,
+        marginTop: -30,
     },
 });
+
+/*
+
+*/

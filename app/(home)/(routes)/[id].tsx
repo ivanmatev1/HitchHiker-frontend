@@ -1,12 +1,15 @@
 import MapComponent from '@/app/components/mapComponent';
-import { acceptRequest, denyRequest, getRoute, getUser, postRouteRequest, removeUser } from '@/app/components/requestHandler';
 import MarkerInterface from '@/app/interfaces/marker.interface';
-import AntDesign from '@expo/vector-icons/AntDesign';
 import { Link, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { Text, View, StyleSheet, TouchableOpacity, ScrollView, FlatList, Alert } from "react-native";
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import Toast from 'react-native-toast-message';
+import { Text, View, StyleSheet, TouchableOpacity, FlatList, ActivityIndicator } from "react-native";
+import { fetchRoute, handleRequestToJoin } from '@/app/hooks/useRoute';
+import participantView from '@/app/components/participantView';
+import requestView from '@/app/components/requestView';
+import { router } from 'expo-router';
+import AntDesign from '@expo/vector-icons/AntDesign';
+import { Image } from 'expo-image';
+import MoreRouteInfo from '@/app/components/moreRouteInfo';
 
 
 export default function RouteIdPage() {
@@ -14,32 +17,10 @@ export default function RouteIdPage() {
     const [route, setRoute] = useState<any>(null);
     const [coordinates, setCoordinates] = useState<{ latitude: number, longitude: number }[]>([]);
     const [role, setRole] = useState<string>("viewer"); // view | participant | creator
-    const [requestBool, setRequestBool] = useState<boolean>(false);
-
-    async function fetchRoute() {
-        try {
-            if (typeof id === 'string') {
-                const route = await getRoute(id);
-                setRoute(route);
-
-                const user = await getUser();
-                if (route.creator.id === user.id) {
-                    setRole("creator");
-                } else if (route.participants.some((participant: { id: string }) => participant.id === user.id)) {
-                    setRole("participant");
-                } else {
-                    setRole("viewer");
-                }
-
-            }
-        } catch (error) {
-            console.error('Failed to fetch route:', error);
-        }
-
-    };
+    const [moreInfo, setMoreInfo] = useState<boolean>(false);
 
     useEffect(() => {
-        fetchRoute();
+        fetchRoute(id, setRoute, setRole);
     }, [id]);
 
     useEffect(() => {
@@ -69,285 +50,147 @@ export default function RouteIdPage() {
         setCoordinates(newCoordinates);
     }, [route]);
 
-    async function handleRequestToJoin() {
-        try {
-            await postRouteRequest(+id);
-            Toast.show({
-                type: 'success',
-                text1: 'Request sent successfully',
-            });
-        } catch (error) {
-            console.error('Failed to post request:', error);
-        }
-    }
-
-    function participantView(item: any) {
-        return (
-            <View style={styles.userView}>
-                {item.id === route.creator.id ?
-                    <MaterialCommunityIcons
-                        name="crown-outline"
-                        size={24} color="rgb(20, 5, 18)"
-                        style={{ marginRight: 16, marginVertical: 8 }} />
-                    :
-                    <AntDesign
-                        name="user"
-                        size={24}
-                        color="rgb(20, 5, 18)"
-                        style={{ marginRight: 16, marginVertical: 8 }}
-                    />
-                }
-
-                <Text style={styles.userText} numberOfLines={1} ellipsizeMode="tail">{item.first_name} {item.last_name}</Text>
-
-                {role === "creator" && item.id !== route.creator.id ?
-                    <TouchableOpacity onPress={() => 
-                        Alert.alert(
-                            "Confirmation", 
-                            "Are you sure you want to proceed?", 
-                            [
-                                {
-                                    text: "Cancel",
-                                    style: "cancel"
-                                },
-                                {
-                                    text: "OK",
-                                    onPress: () => kickParticipant(item.id)
-                                }
-                            ]
-                        )
-                    }>
-                        <AntDesign
-                            name="close"
-                            size={24}
-                            color="rgb(20, 5, 18)"
-                            style={{ marginRight: 16, marginVertical: 8 }}
-                        />
-                    </TouchableOpacity>
-                    : null
-                }
-            </View>
-        )
-    }
-
-    async function handleAcceptRequest(id: number) {
-        try {
-            await acceptRequest(id.toString());
-            fetchRoute();
-        } catch (error) {
-            console.error('Failed to accept request:', error);
-        }
-    }
-
-    async function handleDenyRequest(id: number) {
-        console.log(route.id)
-        try {
-            await denyRequest(id.toString());
-            fetchRoute();
-        } catch (error) {
-            console.error('Failed to deny request:', error);
-        }
-    }
-
-    async function kickParticipant(userId: number) {
-        try {
-            await removeUser(userId, +id);
-            fetchRoute();
-        } catch (error) {
-            console.error('Failed to deny request:', error);
-        }
-    }
-
-    function requestView(item: any) {
-        return (
-            <View style={styles.userView}>
-                <Text style={styles.userText} numberOfLines={1} ellipsizeMode="tail">
-                    {item.sender.first_name} {item.sender.last_name}
-                </Text>
-                <TouchableOpacity onPress={() => handleDenyRequest(item.id)}>
-                    <AntDesign
-                        name="close"
-                        size={26}
-                        color="rgb(20, 5, 18)"
-                        style={{ marginRight: 16, marginVertical: 8 }}
-                    />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => handleAcceptRequest(item.id)}>
-                    <AntDesign
-                        name="check"
-                        size={26}
-                        color="rgb(20, 5, 18)"
-                        style={{ marginRight: 8, marginVertical: 8 }}
-                    />
-                </TouchableOpacity>
-            </View>
-        )
-    }
-
     return (
         <View style={styles.container}>
-            <View style={styles.doubleContainer}>
-                <View style={{ flex: 1 }}>
-                    <Text style={styles.title}>Date:</Text>
-                    <View style={styles.pickerButton}>
-                        <Text style={styles.pickerButtonText}>
-                            {route && route.date ?
-                                new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date(route.date))
-                                : "Date not available"
-                            }
-                        </Text>
-                    </View>
-                </View>
-
-                <View style={{ flex: 1 }}>
-                    <Text style={styles.title}>Time:</Text>
-                    <View style={styles.pickerButton}>
-                        <Text style={styles.pickerButtonText}>
-                            {route && route.date ?
-                                new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false }).format(new Date(route.date))
-                                : "Date not available"
-                            }
-                        </Text>
-                    </View>
-                </View>
-            </View>
-
-            <View style={styles.participantsNav}>
-                <TouchableOpacity style={styles.title} onPress={() => setRequestBool(false)}>
-                    <Text style={styles.pickerButtonText}>Participants</Text>
+            <View style={styles.navBar}>
+                <TouchableOpacity onPress={() => router.back()}>
+                    <AntDesign
+                        name="left"
+                        size={28}
+                        color="rgb(20, 5, 18)"
+                        style={{ marginHorizontal: 16, marginVertical: 8 }}
+                    />
                 </TouchableOpacity>
-
-                {role === "creator" ?
-                    <TouchableOpacity style={styles.title} onPress={() => setRequestBool(true)}>
-                        <Text style={styles.pickerButtonText}>Requests</Text>
-                    </TouchableOpacity>
-                    : null}
             </View>
-            {route && !requestBool ?
-                <FlatList
-                    data={route.participants}
-                    renderItem={({ item }) => participantView(item)}
-                    keyExtractor={item => item.id}
-                    contentContainerStyle={{ paddingVertical: 10 }}
-                    style={styles.list}
-                />
-                : null}
-
-            {route && requestBool ?
-                <FlatList
-                    data={route.requests}
-                    renderItem={({ item }) => requestView(item)}
-                    keyExtractor={item => item.id}
-                    contentContainerStyle={{ paddingVertical: 10 }}
-                    style={styles.list}
-                />
-                : null}
 
             {route ?
-                <View style={styles.mapContiainer}>
-                    <MapComponent startMarker={route.start_location} endMarker={route.end_location} stopMarkers={route.stops} coordinates={coordinates} />
-                </View>
-                : null}
 
-            <View style={{ width: "90%", alignItems: "flex-end", paddingBottom: 8 }}>
-                {role === "creator" ?
-                    <Link
-                        href={{
-                            pathname: '/(home)/(routes)/update',
-                            params: { id: id },
-                        }}
-                        style={{ backgroundColor: "rgb(20, 5, 18)", padding: 10, borderRadius: 10 }}
-                    >
-                        <Text style={{ color: "white", fontSize: 20, fontWeight: "bold" }}>Update</Text>
-                    </Link>
-                    : null}
-                {role === "viewer" ?
-                    <TouchableOpacity
-                        style={{ backgroundColor: "rgb(20, 5, 18)", padding: 10, borderRadius: 10 }}
-                        onPress={handleRequestToJoin}
-                    >
-                        <Text style={{ color: "white", fontSize: 20, fontWeight: "bold" }}>Request to Join</Text>
-                    </TouchableOpacity>
-                    : null}
-            </View>
+                <View style={styles.contentContainer}>
+                    <View style={styles.mapContainer}>
+                        <MapComponent startMarker={route.start_location} endMarker={route.end_location} stopMarkers={route.stops} coordinates={coordinates} />
+                    </View>
+
+                    <View style={styles.infoContainer}>
+
+                        <TouchableOpacity
+                            style={{ width: "100%", justifyContent: "center", alignItems: "center" }}
+                            onPress={() => setMoreInfo(!moreInfo)
+                            }>
+                            <AntDesign
+                                name="up"
+                                size={28}
+                                color="rgb(20, 5, 18)"
+                            />
+                        </TouchableOpacity>
+
+                        <Text style={styles.title}>{route.start_location.name}</Text>
+                        {route.date ?
+                            <View style={{ flexDirection: "row", gap: 8, marginBottom: 8 }}>
+                                <Text style={styles.text}>
+                                    {new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date(route.date))}
+                                </Text>
+                                <Text style={styles.text}>
+                                    {new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false }).format(new Date(route.date))}
+                                </Text>
+                            </View>
+                            :
+                            <Text style={styles.text}>Date not available</Text>
+                        }
+                        <View style={{ flexDirection: "row", gap: 8, marginBottom: 8 }}>
+                            <Image
+                                source={route.creator.photo ? { uri: route.creator.photo } : require("../../../assets/images/defaultUser.jpg")}
+                                style={styles.image}
+                            />
+                            <Text style={styles.text}>
+                                {route.creator.first_name + " " + route.creator.last_name}
+                            </Text>
+                        </View>
+
+                        
+
+
+                        {moreInfo ? <MoreRouteInfo route={route} role={role} id={id} setRoute={setRoute} setRole={setRole} /> : null}
+
+
+                        <View style={{ width: "100%", alignItems: "flex-end" }}>
+                            {role === "creator" ?
+                                <Link
+                                    href={{
+                                        pathname: '/(home)/(routes)/update',
+                                        params: { id: id },
+                                    }}
+                                    style={{ backgroundColor: "rgb(20, 5, 18)", padding: 10, borderRadius: 10 }}
+                                >
+                                    <Text style={{ color: "white", fontSize: 20, fontWeight: "bold" }}>Update</Text>
+                                </Link>
+                                : null}
+                            {role === "viewer" ?
+                                <TouchableOpacity
+                                    style={{ backgroundColor: "rgb(20, 5, 18)", padding: 10, borderRadius: 10 }}
+                                    onPress={() => handleRequestToJoin(id)}
+                                >
+                                    <Text style={{ color: "white", fontSize: 20, fontWeight: "bold" }}>Request to Join</Text>
+                                </TouchableOpacity>
+                                : null}
+                        </View>
+                    </View>
+                </View>
+
+                :
+                <ActivityIndicator size="large" color="rgb(20, 5, 18)" />
+            }
         </View>
     );
 }
 
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
     container: {
         flex: 1,
+        height: "100%",
         alignItems: "center",
         color: "rgb(20, 5, 18)",
-        backgroundColor: "white",
-        paddingTop: 4,
     },
-    pickerButton: {
-        backgroundColor: "white",
-        borderWidth: 0.5,
-        borderColor: "rgb(20, 5, 18)",
-        borderRadius: 10,
-        borderTopLeftRadius: 0,
-        justifyContent: "center",
-        alignItems: "center",
-        marginBottom: 8,
+    mapContainer: {
         width: "100%",
-        height: 45,
-        flexDirection: "row",
-    },
-    pickerButtonText: {
-        color: "rgb(20, 5, 18)",
-        fontSize: 20,
-    },
-    doubleContainer: {
-        flexDirection: "row",
-        width: "90%",
-        justifyContent: "space-between",
-        gap: 10,
-    },
-    mapContiainer: {
-        width: "90%",
-        borderRadius: 20,
-        marginVertical: 10,
-        height: 350,
-        zIndex: 0,
-        borderWidth: 0.5,
+        height: "100%",
+        position: "absolute",
+        zIndex: -1,
         overflow: "hidden",
-    },
-    list: {
-        flex: 1,
-        width: "90%",
-        borderWidth: 0.5,
-        borderBottomLeftRadius: 15,
-        borderBottomRightRadius: 15
     },
     title: {
         color: "rgb(20, 5, 18)",
-        fontSize: 20,
-        width: "50%",
-        textAlign: "center",
-        borderWidth: 0.5,
-        borderTopLeftRadius: 8,
-        borderTopRightRadius: 8,
-        paddingVertical: 4,
-        justifyContent: "center",
-        alignItems: "center",
+        fontSize: 24,
+        fontWeight: "500",
     },
-    participantsNav: {
-        width: "90%",
-        flexDirection: "row",
-    },
-    userText: {
+    text: {
         color: "rgb(20, 5, 18)",
         fontSize: 16,
-        paddingVertical: 10,
-        flex: 1,
+        fontWeight: "400",
     },
-    userView: {
+    navBar: {
         width: "100%",
-        borderBottomWidth: 0.5,
-        borderRadius: 10,
-        flexDirection: "row",
-        paddingLeft: 16
+        height: 56,
+        backgroundColor: "white",
+        justifyContent: "center",
+    },
+    contentContainer: {
+        width: "100%",
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "flex-end",
+    },
+    infoContainer: {
+        width: "100%",
+        minHeight: 100,
+        backgroundColor: "white",
+        borderTopLeftRadius: 32,
+        borderTopRightRadius: 32,
+        padding: 24,
+        paddingVertical: 8,
+    },
+    image: {
+        width: 20,
+        height: 20,
+        borderRadius: 12,
     },
 });

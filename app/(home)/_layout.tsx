@@ -2,7 +2,6 @@ import Feather from '@expo/vector-icons/Feather';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Tabs, useSegments } from 'expo-router';
-import RoutesHeader from '../components/routesHeader';
 
 
 export default function TabLayout() {
