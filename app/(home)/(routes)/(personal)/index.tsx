@@ -37,8 +37,10 @@ export default function PersonalRoutes() {
                         stopMarkers={item.stops}
                         date={new Date(item.date)}
                         passengers={item.passangers}
-                        creatorName={item.creator.first_name + " " + item.creator.last_name}
+                        creatorPhoto={item.creator.photo}
                         id={item.id}
+                        creatorName={item.creator.first_name + " " + item.creator.last_name}
+                        currentPassengers={item.participants.length}
                     />}
                     keyExtractor={item => item.id}
                 />

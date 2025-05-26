@@ -18,6 +18,9 @@ export default function Profile() {
     async function fetchRoutes() {
         try {
             const routes = await getPersonalRoutes();
+            routes.data.forEach((element: any) => {
+                console.log(element.participants, element.date);
+            });
             setRoutes(routes);
         } catch (error) {
             console.error('Failed to fetch routes:', error);
@@ -64,7 +67,7 @@ export default function Profile() {
                 >
                     <WhiteHitchhiker width={72} height={72} style={{ margin: 16 }} />
                 </ImageBackground>
-                
+
 
                 <Image
                     source={user?.photo ? { uri: user?.photo } : require("../../../assets/images/defaultUser.jpg")}
@@ -129,8 +132,10 @@ export default function Profile() {
                                     stopMarkers={item.stops}
                                     date={new Date(item.date)}
                                     passengers={item.passangers}
-                                    creatorName={item.creator.first_name + " " + item.creator.last_name}
+                                    creatorPhoto={item.creator.photo}
                                     id={item.id}
+                                    creatorName={item.creator.first_name + " " + item.creator.last_name}
+                                    currentPassengers={item.participants.length}
                                 />
                             </View>
                         }

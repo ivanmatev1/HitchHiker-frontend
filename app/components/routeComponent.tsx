@@ -1,8 +1,9 @@
-import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import { View, Text, StyleSheet } from "react-native";
+import { Image } from 'expo-image';
+import { View, Text, StyleSheet, Touchable, TouchableOpacity } from "react-native";
 import MarkerInterface from "../interfaces/marker.interface";
 import { Link } from "expo-router";
 import Octicons from '@expo/vector-icons/Octicons';
+import { LinearGradient } from 'expo-linear-gradient';
 
 interface routeComponentInterface {
     startMarker: MarkerInterface | null
@@ -10,12 +11,16 @@ interface routeComponentInterface {
     stopMarkers: MarkerInterface[]
     date: Date
     passengers: string
+    creatorPhoto: string | null
     creatorName: string
+    currentPassengers: number
     id: number
 }
 
 
-export default function RouteComponent({ startMarker, endMarker, stopMarkers, date, passengers, creatorName, id }: routeComponentInterface) {
+export default function RouteComponent({ startMarker, endMarker, stopMarkers, date, passengers, creatorPhoto, id, creatorName, currentPassengers }: routeComponentInterface) {
+
+
     const truncateText = (text: string | undefined, maxLength: number) => {
         if (!text) {
             return "";
@@ -27,66 +32,84 @@ export default function RouteComponent({ startMarker, endMarker, stopMarkers, da
         }
     };
 
-
     return (
-        <Link style={styles.container} href={{
+        <Link href={{
             pathname: '/(home)/(routes)/[id]',
             params: { id: id },
-        }}>
-            <View style={styles.routeBox}>
-                <Text style={styles.textRoute} >
-                    {truncateText(startMarker?.main_text, 10)}
-                </Text>
+        }}
+            asChild
+        >
+            <TouchableOpacity style={styles.container} >
 
+                <View style={styles.creatorBar}>
+                    <LinearGradient
+                        // Background Linear Gradient
+                        colors={["rgb(20, 5, 18)", 'rgb(80,4,108)']}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 0 }}
+                        style={styles.gradient}
+                    >
+                        <Image
+                            source={creatorPhoto ? { uri: creatorPhoto } : require("../../assets/images/defaultUser.jpg")}
+                            style={styles.image}
+                        />
+                        <Text style={{ color: "white", fontWeight: 700, marginLeft: 8 }}>
+                            {creatorName}
+                        </Text>
+                    </LinearGradient>
 
-                <View style={{ alignItems: "center", paddingVertical: 8, paddingTop: 32, marginHorizontal: 4 }}>
-                    <View style={{ flexDirection: "row", alignItems: "center" }}>
-                        <View style={{ alignItems: "center" }}>
-                            <View style={{
-                                width: 60,
-                                borderWidth: 1,
-                                marginTop: stopMarkers.length <= 0 ? -6 : 0,
-                            }}></View>
-                            {stopMarkers.length > 0 ?
-                                <Octicons name="dot-fill" size={16} color="black" style={{ marginTop: -9 }} />
-                                : null}
+                </View>
+
+                <View style={styles.routeBox}>
+                    <Text style={styles.textRoute} >
+                        {truncateText(startMarker?.main_text, 10)}
+                    </Text>
+
+                    <View style={{ alignItems: "center", borderRadius: 8, height: "100%", paddingTop: 27 }}>
+                        <View style={{ flexDirection: "row", alignItems: "center" }}>
+                            <View style={{ alignItems: "center" }}>
+                                <View style={{
+                                    width: 60,
+                                    borderWidth: 1,
+                                    marginTop: stopMarkers.length === 0 ? 0 : 0,
+                                }}></View>
+                                {stopMarkers.length > 0 ?
+                                    <Octicons name="dot-fill" size={16} color="black" style={{ marginTop: -9, zIndex: 2 }} />
+                                    : null}
+                            </View>
+
+                            {/*  <MaterialCommunityIcons name="car-side" size={20} color="black" style={{ marginLeft: 4, marginTop: -8 }} /> */}
                         </View>
-
-                        <MaterialCommunityIcons name="car-side" size={20} color="black" style={{ marginLeft: 4, marginTop: -8 }} />
+                        {stopMarkers.length === 0 ?
+                            <Text style={{ fontWeight: 500 }}>No stops</Text>
+                            :
+                            <Text style={{ fontWeight: 500, marginTop: - 4 }}>{stopMarkers.length} stops</Text>
+                        }
                     </View>
-                    {stopMarkers.length <= 0 ?
-                        <Text style={{ fontWeight: 500, marginTop: -4 }}>No stops</Text>
-                        :
-                        <Text style={{ fontWeight: 500, marginTop: -4 }}>{stopMarkers.length} stops</Text>
-                    }
-                </View>
 
-
-
-                <Text style={styles.textRoute}>
-                    {truncateText(endMarker?.main_text, 10)}
-                </Text>
-            </View>
-
-            <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                <View style={styles.infoBox}>
-                    <Text style={styles.infoBoxText}>
-                        DATE: {new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric', }).format(date)}
-                    </Text>
-                    <Text style={styles.infoBoxText}>
-                        TIME: {new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false }).format(date)}
+                    <Text style={styles.textRoute}>
+                        {truncateText(endMarker?.main_text, 10)}
                     </Text>
                 </View>
 
-                <View style={{ width: 0.5, height: "100%", backgroundColor: "rgb(92, 87, 92)" }}>
+
+                <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                    <View style={styles.infoBox}>
+                        <Text style={styles.infoBoxText}>
+                            {new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric', }).format(date)}
+                        </Text>
+                        <Text style={styles.infoBoxText}>
+                            {new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false }).format(date)}
+                        </Text>
+                    </View>
+
+
+                    <View style={styles.infoBox}>
+                        <Text style={styles.infoBoxText}>Participants: {currentPassengers}/{passengers}</Text>
+                    </View>
 
                 </View>
-                <View style={styles.infoBox}>
-                    <Text style={styles.infoBoxText}>Participants: 1/{passengers}</Text>
-                    <Text style={styles.infoBoxText}>Creator: {creatorName}</Text>
-                </View>
-
-            </View>
+            </TouchableOpacity>
 
 
 
@@ -97,24 +120,17 @@ export default function RouteComponent({ startMarker, endMarker, stopMarkers, da
 const styles = StyleSheet.create({
     container: {
         width: "100%",
-        height: "auto",
-        alignItems: "center",
-        justifyContent: "center",
-        paddingHorizontal: 8,
         borderWidth: 0.5,
-        borderRadius: 10,
-        marginBottom: 8,
-        flexDirection: "row",
+        borderRadius: 12,
     },
     routeBox: {
-        flex: 1,
+        width: "100%",
+        height: 56,
         flexDirection: "row",
+        justifyContent: "space-evenly",
         alignItems: "center",
-        justifyContent: "center",
-        paddingHorizontal: 8,
-        paddingVertical: 8,
-        borderRadius: 8,
-        borderBottomWidth: 0.5,
+        borderRadius: 16,
+        borderBottomWidth: 1,
     },
     textRoute: {
         color: "rgb(20, 5, 18)",
@@ -123,13 +139,35 @@ const styles = StyleSheet.create({
     },
     infoBox: {
         flex: 1,
-        height: "100%",
+        height: 56,
         justifyContent: "center",
-        textAlign: "center",
-        paddingLeft: 8
+        alignItems: "center",
     },
     infoBoxText: {
         color: "rgb(20, 5, 18)",
         fontSize: 16,
+    },
+    creatorBar: {
+        width: "100%",
+        height: 30,
+        borderTopLeftRadius: 12,
+        borderTopRightRadius: 12,
+        justifyContent: "center",
+    },
+    image: {
+        width: 20,
+        height: 20,
+        borderRadius: 12,
+        marginLeft: 12,
+        zIndex: 10,
+    },
+    gradient: {
+        width: "100%",
+        height: "100%",
+        borderTopLeftRadius: 12,
+        borderTopRightRadius: 12,
+        zIndex: 1,
+        alignItems: "center",
+        flexDirection: "row",
     }
 });

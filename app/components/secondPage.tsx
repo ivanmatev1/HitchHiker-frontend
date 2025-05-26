@@ -45,8 +45,8 @@ export default function SecondPage({
   const [passengers, setNumberOfPassengers] = useState<string>("");
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
-
   const [creatorName, setCreatorName] = useState('');
+  const [creatorPhoto, setCreatorPhoto] = useState('');
 
 
   useEffect(() => {
@@ -54,6 +54,8 @@ export default function SecondPage({
       try {
         const user = await getUser();
         setCreatorName(user.first_name + " " + user.last_name);
+
+        setCreatorPhoto(user.photo);
       } catch (error) {
         console.error("Error fetching user:", error);
       }
@@ -171,7 +173,7 @@ export default function SecondPage({
 
         <View style={{ width: "90%", marginTop: 16 }}>
           <Text style={{ color: "rgb(20, 5, 18)", fontSize: 16, marginBottom: 10, }}>This is how your route will appear to other users:</Text>
-          <RouteComponent startMarker={startMarker} endMarker={endMarker} stopMarkers={stopMarkers} date={date} passengers={passengers} creatorName={creatorName} id={-1} />
+          <RouteComponent startMarker={startMarker} endMarker={endMarker} stopMarkers={stopMarkers} date={date} passengers={passengers} creatorPhoto={creatorPhoto} id={-1} creatorName={creatorName} currentPassengers={1} />
         </View>
 
         {showDatePicker && (

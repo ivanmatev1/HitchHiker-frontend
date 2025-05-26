@@ -76,16 +76,23 @@ export default function BrowseRoutes() {
                     </Text>
                     :
                     <FlatList
+                        style={{ width: "100%", paddingHorizontal: 16 }}
                         data={routes.data}
-                        renderItem={({ item }) => <RouteComponent
-                            startMarker={item.start_location}
-                            endMarker={item.end_location}
-                            stopMarkers={item.stops}
-                            date={new Date(item.date)}
-                            passengers={item.passangers}
-                            creatorName={item.creator.first_name + " " + item.creator.last_name}
-                            id={item.id}
-                        />}
+                        renderItem={({ item }) =>
+                            <View style={{ width: "100%", marginVertical: 8 }}>
+                                <RouteComponent
+                                    startMarker={item.start_location}
+                                    endMarker={item.end_location}
+                                    stopMarkers={item.stops}
+                                    date={new Date(item.date)}
+                                    passengers={item.passangers}
+                                    creatorPhoto={item.creator.photo}
+                                    id={item.id}
+                                    creatorName={item.creator.first_name + " " + item.creator.last_name}
+                                    currentPassengers={item.participants.length}
+                                />
+                            </View>
+                        }
                         keyExtractor={item => item.id}
                     />
                 }
@@ -104,14 +111,12 @@ const styles = StyleSheet.create({
     filterButtonView: {
         width: "100%",
         paddingHorizontal: 16,
-        borderBottomWidth: 1
     },
     filterButton: {
         flexDirection: "row",
         alignItems: "center",
         paddingVertical: 10,
         paddingHorizontal: 16,
-        borderWidth: 0.5,
         width: 100,
         borderRadius: 10,
         marginVertical: 8

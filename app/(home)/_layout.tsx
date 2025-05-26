@@ -33,7 +33,7 @@ export default function TabLayout() {
           title: "Routes",
           tabBarShowLabel: false,
           tabBarIcon: ({ color }) => <FontAwesome size={28} name="search" color={color} />,
-          header: () => <RoutesHeader />, 
+          headerShown: false,
         }}
       />
 
