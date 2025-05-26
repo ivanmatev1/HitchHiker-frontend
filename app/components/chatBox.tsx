@@ -5,6 +5,8 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { Link } from 'expo-router';
+import { LinearGradient } from 'expo-linear-gradient';
+import Octicons from '@expo/vector-icons/Octicons';
 
 type ChatBoxProps = {
     image: string | null;
@@ -31,40 +33,62 @@ export default function ChatBox({ image, creator, startDestination, endDestinati
         <Link href={{
             pathname: '/(home)/(chats)/[id]',
             params: { id: id, creatorName: `${creator.first_name} ${creator.last_name}` },
-        }}>
-            <View style={styles.container}>
-                <Image
-                    source={image ? { uri: image } : require("../../assets/images/defaultUser.jpg")}
-                    style={styles.image}
-                />
-                <View style={styles.infoBox}>
-                    <View style={styles.titleBox}>
-                        <Text style={styles.title}>{creator.first_name} {creator.last_name}'s chat</Text>
-                    </View>
-                    <View style={styles.routeBox}>
-                        <MaterialCommunityIcons name="car-side" size={24} color="rgb(92, 87, 92)" />
-                        <Text style={styles.textRoute} >
-                            {truncateText(startDestination, 6)}
+        }}
+            asChild>
+            <TouchableOpacity style={styles.container}>
+                <View style={styles.creatorBar}>
+                    <LinearGradient
+                        colors={["rgb(20, 5, 18)", 'rgb(80,4,108)']}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 0 }}
+                        style={styles.gradient}
+                    >
+                        <Image
+                            source={image ? { uri: image } : require("../../assets/images/defaultUser.jpg")}
+                            style={styles.image}
+                        />
+                        <Text style={{ color: "white", fontWeight: 700, marginLeft: 8 }}>
+                            {creator.first_name} {creator.last_name}
                         </Text>
-
-                        {stops.length > 0 ?
-                            <View style={{ flexDirection: "row", alignItems: "center", }}>
-                                <FontAwesome name="long-arrow-right" size={24} color="rgb(92, 87, 92)" />
-                                <Text style={styles.textRoute}>({stops.length})</Text>
-                            </View>
-                            : null
-                        }
-
-                        <FontAwesome name="long-arrow-right" size={24} color="rgb(92, 87, 92)" />
-                        <Text style={styles.textRoute}>
-                            {truncateText(endDestination, 6)}
-                        </Text>
-                    </View>
-
-
+                    </LinearGradient>
                 </View>
-                <AntDesign name="right" size={28} color="rgb(20, 5, 18)" />
-            </View>
+
+                <View style={{ flexDirection: "row", width: "100%", alignItems: "center"}}>
+                    <View style={styles.routeBox}>
+                        <Text style={styles.textRoute} >
+                            {truncateText(startDestination, 10)}
+                        </Text>
+
+                        <View style={{ alignItems: "center", borderRadius: 8, height: "100%", paddingTop: 27 }}>
+                            <View style={{ flexDirection: "row", alignItems: "center" }}>
+                                <View style={{ alignItems: "center" }}>
+                                    <View style={{
+                                        width: 60,
+                                        borderWidth: 1,
+                                    }}></View>
+                                    {stops.length > 0 ?
+                                        <Octicons name="dot-fill" size={16} color="black" style={{ marginTop: -9, zIndex: 2 }} />
+                                        : null}
+                                </View>
+
+                            </View>
+                            {stops.length === 0 ?
+                                <Text style={{ fontWeight: 500 }}>No stops</Text>
+                                :
+                                <Text style={{ fontWeight: 500, marginTop: - 4 }}>{stops.length} stops</Text>
+                            }
+                        </View>
+
+                        <Text style={styles.textRoute}>
+                            {truncateText(endDestination, 10)}
+                        </Text>
+
+
+                    </View>
+                    <AntDesign name="right" size={28} color="rgb(20, 5, 18)" style={{ marginRight: 12 }} />
+                </View>
+
+            </TouchableOpacity>
         </Link>
 
     );
@@ -73,44 +97,45 @@ export default function ChatBox({ image, creator, startDestination, endDestinati
 const styles = StyleSheet.create({
     container: {
         width: "100%",
-        height: 90,
-        borderBottomWidth: 1,
-        borderColor: "rgb(92, 87, 92)",
-        alignItems: "center",
-        flexDirection: "row",
-        paddingHorizontal: 16,
-        backgroundColor: "white",
-    },
-    image: {
-        width: 60,
-        height: 60,
-        borderRadius: 30,
+        height: 92,
         borderWidth: 1,
-        marginRight: 16,
+        borderColor: "rgb(20, 5, 18)",
+        alignItems: "center",
+        borderRadius: 16,
     },
-    infoBox: {
-        flex: 1,
+    creatorBar: {
+        width: "100%",
+        height: 30,
+        borderTopLeftRadius: 16,
+        borderTopRightRadius: 16,
         justifyContent: "center",
     },
-    routeBox: {
-        flexDirection: "row",
-        alignItems: "center",
-        paddingHorizontal: 8,
-        borderRadius: 8,
+    image: {
+        width: 20,
+        height: 20,
+        borderRadius: 12,
+        marginLeft: 12,
+        zIndex: 10,
     },
-    titleBox: {
-        //backgroundColor: "rgb(244, 132, 229)",
-        marginBottom: 8,
-        paddingHorizontal: 4,
+    gradient: {
+        width: "100%",
+        height: "100%",
+        borderTopLeftRadius: 12,
+        borderTopRightRadius: 12,
+        zIndex: 1,
+        alignItems: "center",
+        flexDirection: "row",
+    },
+    routeBox: {
+        flex: 1,
+        flexDirection: "row",
+        justifyContent: "space-evenly",
+        alignItems: "center",
+
     },
     textRoute: {
-        color: "rgb(92, 87, 92)",
-        fontSize: 18,
-        fontWeight: 600,
-        marginHorizontal: 8
-    },
-    title: {
         color: "rgb(20, 5, 18)",
         fontSize: 18,
-    }
+        fontWeight: 600,
+    },
 });

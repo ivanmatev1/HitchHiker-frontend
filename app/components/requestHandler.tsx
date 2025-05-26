@@ -22,7 +22,6 @@ apiClient.interceptors.request.use(
 export async function getUsers() {
   try {
     const response = await apiClient.get("/users");
-    console.log(response.data);
   } catch (error) {
     console.error('Error fetching data:', error);
   }
@@ -118,7 +117,6 @@ export async function filterRoutes(startLat: number | null, startLng: number | n
 export async function getPersonalRoutes() {
   try {
     const response = await apiClient.get(`/routes/personal`);
-    console.log(response.data);
     return response.data;
   } catch (error: any) {
     throw new Error(error.response.data.message);

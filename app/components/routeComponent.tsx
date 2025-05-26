@@ -43,7 +43,6 @@ export default function RouteComponent({ startMarker, endMarker, stopMarkers, da
 
                 <View style={styles.creatorBar}>
                     <LinearGradient
-                        // Background Linear Gradient
                         colors={["rgb(20, 5, 18)", 'rgb(80,4,108)']}
                         start={{ x: 0, y: 0 }}
                         end={{ x: 1, y: 0 }}
